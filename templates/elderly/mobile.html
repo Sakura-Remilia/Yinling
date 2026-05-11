@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}大字模式{% endblock %}
+
+{% block extra_css %}
+<style>
+    .mobile-container {
+        background-color: #f5f5f5;
+        padding: 20px;
+        min-height: calc(100vh - 56px);
+    }
+    .big-btn {
+        font-size: 32px;
+        padding: 30px;
+        margin: 15px 0;
+        border-radius: 20px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .sos-btn {
+        background: linear-gradient(145deg, #e74c3c, #c0392b);
+        color: white;
+        font-size: 48px;
+        font-weight: bold;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        border: none;
+        box-shadow: 0 8px 30px rgba(231, 76, 60, 0.5);
+    }
+    .service-btn {
+        font-size: 28px;
+        padding: 25px;
+        height: auto;
+    }
+    .mobile-header {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .mobile-header h1 {
+        font-size: 36px;
+        color: #e74c3c;
+        margin: 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mobile-container">
+    <div class="mobile-header">
+        <h1><i class="bi bi-heart-pulse-fill"></i> 银龄社区</h1>
+        <p class="mb-0 mt-2">欢迎，{{ current_user.real_name }}</p>
+    </div>
+    
+    <div class="text-center mb-4">
+        <a href="{{ url_for('elderly.sos') }}" class="sos-btn text-decoration-none d-inline-flex align-items-center justify-content-center">
+            SOS
+        </a>
+        <p class="mt-3 text-danger">紧急求助</p>
+    </div>
+    
+    <div class="row g-3">
+        <div class="col-6">
+            <a href="{{ url_for('elderly.services') }}" class="text-decoration-none">
+                <div class="big-btn btn btn-primary w-100 service-btn d-block">
+                    <i class="bi bi-house-heart d-block mb-2" style="font-size: 40px;"></i>
+                    呼叫服务
+                </div>
+            </a>
+        </div>
+        <div class="col-6">
+            <a href="{{ url_for('elderly.health') }}" class="text-decoration-none">
+                <div class="big-btn btn btn-success w-100 service-btn d-block">
+                    <i class="bi bi-heart-pulse d-block mb-2" style="font-size: 40px;"></i>
+                    健康监测
+                </div>
+            </a>
+        </div>
+        <div class="col-6">
+            <a href="{{ url_for('elderly.orders') }}" class="text-decoration-none">
+                <div class="big-btn btn btn-info w-100 service-btn d-block">
+                    <i class="bi bi-list-check d-block mb-2" style="font-size: 40px;"></i>
+                    我的订单
+                </div>
+            </a>
+        </div>
+        <div class="col-6">
+            <a href="{{ url_for('elderly.activities') }}" class="text-decoration-none">
+                <div class="big-btn btn btn-warning w-100 service-btn d-block">
+                    <i class="bi bi-calendar-heart d-block mb-2" style="font-size: 40px;"></i>
+                    活动广场
+                </div>
+            </a>
+        </div>
+    </div>
+    
+    <div class="text-center mt-4">
+        <a href="{{ url_for('elderly.dashboard') }}" class="btn btn-outline-secondary btn-lg">
+            <i class="bi bi-arrow-left me-2"></i>返回普通模式
+        </a>
+    </div>
+    
+    <div class="text-center mt-4">
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger btn-lg">
+            <i class="bi bi-box-arrow-right me-2"></i>退出登录
+        </a>
+    </div>
+</div>
+{% endblock %}

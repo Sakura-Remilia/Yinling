@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}活动广场{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="row g-0 min-vh-100 elderly-layout">
+        <div class="col-md-2 sidebar py-4">
+            {% include 'elderly/_sidebar.html' %}
+        </div>
+        <div class="col-md-10 py-4 px-5 main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4><i class="bi bi-calendar-heart text-primary me-2"></i>活动广场</h4>
+                <a href="{{ url_for('elderly.my_activities') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-list-check me-2"></i>我的活动
+                </a>
+            </div>
+            
+            {% if activities %}
+            <div class="row g-4">
+                {% for activity in activities %}
+                <div class="col-md-4">
+                    <div class="card activity-card h-100">
+                        {% if activity.cover_image %}
+                        <img src="{{ activity.cover_image }}" class="card-img-top" alt="{{ activity.title }}">
+                        {% else %}
+                        <div class="card-img-top bg-gradient-primary d-flex align-items-center justify-content-center" 
+                             style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <i class="bi bi-calendar-event text-white" style="font-size: 4rem;"></i>
+                        </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <span class="badge bg-primary mb-2">{{ activity.activity_type or '社区活动' }}</span>
+                            <h5 class="card-title">{{ activity.title }}</h5>
+                            <p class="card-text text-muted small">{{ activity.description[:100] }}...</p>
+                            <p class="mb-1"><i class="bi bi-geo-alt text-muted me-2"></i>{{ activity.location }}</p>
+                            <p class="mb-1"><i class="bi bi-clock text-muted me-2"></i>
+                                {{ activity.start_time.strftime('%m月%d日 %H:%M') }}
+                            </p>
+                            <p class="mb-0">
+                                <i class="bi bi-people text-muted me-2"></i>
+                                {% if activity.max_participants > 0 %}
+                                {{ activity.current_participants }}/{{ activity.max_participants }}人
+                                {% else %}
+                                已报名 {{ activity.current_participants }}人
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="card-footer bg-white border-0 pb-3">
+                            <form method="POST" action="{{ url_for('elderly.register_activity', activity_id=activity.id) }}">
+                                {% if activity.max_participants > 0 and activity.current_participants >= activity.max_participants %}
+                                <button type="submit" class="btn btn-outline-secondary w-100">
+                                    <i class="bi bi-list-ol me-2"></i>加入候补
+                                </button>
+                                {% else %}
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-plus-circle me-2"></i>立即报名
+                                </button>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center text-muted py-5">
+                <i class="bi bi-calendar-x" style="font-size: 3rem;"></i>
+                <p class="mt-3">暂无活动</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

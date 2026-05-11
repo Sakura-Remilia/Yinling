@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}工单详情{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="row g-0 min-vh-100">
+        <div class="col-md-2 sidebar py-4">
+            <div class="text-center mb-4">
+                <img src="{{ url_for('static', filename='images/default_avatar.svg') }}" 
+                     class="avatar-lg rounded-circle mb-2" alt="头像">
+                <h5>{{ current_user.real_name }}</h5>
+                {% if current_user.worker_profile and current_user.worker_profile.is_verified %}
+                <span class="badge bg-success">已认证</span>
+                {% else %}
+                <span class="badge bg-warning">待审核</span>
+                {% endif %}
+            </div>
+            <nav class="nav flex-column">
+                <a class="nav-link" href="{{ url_for('worker.dashboard') }}">
+                    <i class="bi bi-house"></i>首页
+                </a>
+                <a class="nav-link" href="{{ url_for('worker.orders') }}">
+                    <i class="bi bi-list-task"></i>工单中心
+                </a>
+                <a class="nav-link active" href="{{ url_for('worker.my_orders') }}">
+                    <i class="bi bi-briefcase"></i>我的工单
+                </a>
+                <a class="nav-link" href="{{ url_for('worker.elderly_list') }}">
+                    <i class="bi bi-people"></i>老人档案
+                </a>
+                <a class="nav-link" href="{{ url_for('worker.visits') }}">
+                    <i class="bi bi-geo-alt"></i>走访任务
+                </a>
+                <a class="nav-link" href="{{ url_for('worker.follow_ups') }}">
+                    <i class="bi bi-telephone"></i>回访记录
+                </a>
+                <a class="nav-link" href="{{ url_for('worker.profile') }}">
+                    <i class="bi bi-person"></i>个人资料
+                </a>
+            </nav>
+        </div>
+        <div class="col-md-10 py-4 px-5 main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4><i class="bi bi-file-text text-primary me-2"></i>工单详情</h4>
+                <a href="{{ url_for('worker.my_orders') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>返回列表
+                </a>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card mb-4">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0"><i class="bi bi-info-circle text-primary me-2"></i>基本信息</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted">服务类型</label>
+                                    <p class="fs-5">{{ order.service_type }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted">工单状态</label>
+                                    <p>
+                                        {% if order.status == 'pending' %}
+                                        <span class="badge bg-secondary">待接单</span>
+                                        {% elif order.status == 'accepted' %}
+                                        <span class="badge bg-info">已接单</span>
+                                        {% elif order.status == 'in_progress' %}
+                                        <span class="badge bg-primary">进行中</span>
+                                        {% elif order.status == 'completed' %}
+                                        <span class="badge bg-success">已完成</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">{{ order.status }}</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted">服务对象</label>
+                                    <p>{{ order.elderly.real_name if order.elderly else '未知' }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted">联系电话</label>
+                                    <p>{{ order.elderly.phone if order.elderly else '未知' }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label text-muted">服务地址</label>
+                                <p>{{ order.address or '未填写' }}</p>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted">预约时间</label>
+                                    <p>{{ order.scheduled_time.strftime('%Y-%m-%d %H:%M') if order.scheduled_time else '待定' }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted">创建时间</label>
+                                    <p>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                                </div>
+                            </div>
+                            
+                            {% if order.notes %}
+                            <div class="mb-3">
+                                <label class="form-label text-muted">备注</label>
+                                <p>{{ order.notes }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if order.status == 'in_progress' %}
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0"><i class="bi bi-check-circle text-success me-2"></i>完成服务</h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ url_for('worker.complete_order', order_id=order.id) }}" method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label">服务备注</label>
+                                    <textarea class="form-control" name="service_notes" rows="3" 
+                                              placeholder="请填写服务完成情况"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-check-circle me-1"></i>确认完成
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-header bg-white">
+                            <h6 class="mb-0"><i class="bi bi-clock text-primary me-2"></i>工单进度</h6>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>创建时间</span>
+                                    <small>{{ order.created_at.strftime('%m-%d %H:%M') }}</small>
+                                </li>
+                                {% if order.accepted_at %}
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>接单时间</span>
+                                    <small>{{ order.accepted_at.strftime('%m-%d %H:%M') }}</small>
+                                </li>
+                                {% endif %}
+                                {% if order.arrived_at %}
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>到达时间</span>
+                                    <small>{{ order.arrived_at.strftime('%m-%d %H:%M') }}</small>
+                                </li>
+                                {% endif %}
+                                {% if order.completed_at %}
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>完成时间</span>
+                                    <small>{{ order.completed_at.strftime('%m-%d %H:%M') }}</small>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    {% if order.status == 'accepted' %}
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <p class="text-muted mb-3">到达服务地点后请点击确认</p>
+                            <button class="btn btn-primary w-100" onclick="arriveOrder({{ order.id }})">
+                                <i class="bi bi-geo-alt me-1"></i>确认到达
+                            </button>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if order.service_notes %}
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h6 class="mb-0"><i class="bi bi-chat-left-text text-primary me-2"></i>服务备注</h6>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-0">{{ order.service_notes }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function arriveOrder(orderId) {
+    fetch(`/worker/orders/${orderId}/arrive`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        alert('操作失败，请重试');
+    });
+}
+</script>
+{% endblock %}

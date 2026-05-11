@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}编辑活动{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="row g-0 min-vh-100">
+        <div class="col-md-2 sidebar py-4">
+            <div class="text-center mb-4">
+                <img src="{{ url_for('static', filename='images/default_avatar.svg') }}" 
+                     class="avatar-lg rounded-circle mb-2" alt="头像">
+                <h5>{{ current_user.real_name }}</h5>
+                <small class="text-muted">社区管理员</small>
+            </div>
+            <nav class="nav flex-column">
+                <a class="nav-link" href="{{ url_for('community_admin.dashboard') }}">
+                    <i class="bi bi-speedometer2"></i>数据看板
+                </a>
+                <a class="nav-link" href="{{ url_for('community_admin.elderly_list') }}">
+                    <i class="bi bi-people"></i>老人管理
+                </a>
+                <a class="nav-link" href="{{ url_for('community_admin.volunteers') }}">
+                    <i class="bi bi-person-heart"></i>志愿者管理
+                </a>
+                <a class="nav-link" href="{{ url_for('community_admin.workers') }}">
+                    <i class="bi bi-person-badge"></i>工作人员管理
+                </a>
+                <a class="nav-link" href="{{ url_for('community_admin.orders') }}">
+                    <i class="bi bi-list-check"></i>订单管理
+                </a>
+                <a class="nav-link" href="{{ url_for('community_admin.sos_list') }}">
+                    <i class="bi bi-exclamation-triangle"></i>SOS管理
+                </a>
+                <a class="nav-link active" href="{{ url_for('community_admin.activities') }}">
+                    <i class="bi bi-calendar-event"></i>活动管理
+                </a>
+                <a class="nav-link" href="{{ url_for('community_admin.accounts') }}">
+                    <i class="bi bi-person-gear"></i>账号管理
+                </a>
+                <a class="nav-link" href="{{ url_for('community_admin.alerts') }}">
+                    <i class="bi bi-bell"></i>预警通知
+                </a>
+                <a class="nav-link" href="{{ url_for('community_admin.profile') }}">
+                    <i class="bi bi-person"></i>个人设置
+                </a>
+            </nav>
+        </div>
+        <div class="col-md-10 py-4 px-5 main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4><i class="bi bi-pencil text-primary me-2"></i>编辑活动</h4>
+                <a href="{{ url_for('community_admin.activities') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> 返回列表
+                </a>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">活动标题 <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="title" value="{{ activity.title }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">活动类型 <span class="text-danger">*</span></label>
+                                <select class="form-select" name="activity_type" required>
+                                    <option value="health" {% if activity.activity_type == 'health' %}selected{% endif %}>健康讲座</option>
+                                    <option value="entertainment" {% if activity.activity_type == 'entertainment' %}selected{% endif %}>文娱活动</option>
+                                    <option value="sports" {% if activity.activity_type == 'sports' %}selected{% endif %}>体育健身</option>
+                                    <option value="social" {% if activity.activity_type == 'social' %}selected{% endif %}>社交聚会</option>
+                                    <option value="volunteer" {% if activity.activity_type == 'volunteer' %}selected{% endif %}>志愿服务</option>
+                                    <option value="other" {% if activity.activity_type == 'other' %}selected{% endif %}>其他</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">活动描述</label>
+                                <textarea class="form-control" name="description" rows="4">{{ activity.description }}</textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">开始时间 <span class="text-danger">*</span></label>
+                                <input type="datetime-local" class="form-control" name="start_time" 
+                                       value="{{ activity.start_time.strftime('%Y-%m-%dT%H:%M') }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">结束时间 <span class="text-danger">*</span></label>
+                                <input type="datetime-local" class="form-control" name="end_time" 
+                                       value="{{ activity.end_time.strftime('%Y-%m-%dT%H:%M') }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">活动地点</label>
+                                <input type="text" class="form-control" name="location" value="{{ activity.location or '' }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">最大参与人数</label>
+                                <input type="number" class="form-control" name="max_participants" min="0" 
+                                       value="{{ activity.max_participants or 0 }}">
+                                <small class="text-muted">0表示不限制人数</small>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-1"></i>保存修改
+                                </button>
+                                <a href="{{ url_for('community_admin.activities') }}" class="btn btn-outline-secondary ms-2">取消</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

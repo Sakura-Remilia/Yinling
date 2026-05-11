@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}新建回访{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="row g-0 min-vh-100">
+        <div class="col-md-2 sidebar py-4">
+            <div class="text-center mb-4">
+                <img src="{{ url_for('static', filename='images/default_avatar.svg') }}" 
+                     class="avatar-lg rounded-circle mb-2" alt="头像">
+                <h5>{{ current_user.real_name }}</h5>
+                {% if current_user.worker_profile and current_user.worker_profile.is_verified %}
+                <span class="badge bg-success">已认证</span>
+                {% else %}
+                <span class="badge bg-warning">待审核</span>
+                {% endif %}
+            </div>
+            <nav class="nav flex-column">
+                <a class="nav-link" href="{{ url_for('worker.dashboard') }}">
+                    <i class="bi bi-house"></i>首页
+                </a>
+                <a class="nav-link" href="{{ url_for('worker.orders') }}">
+                    <i class="bi bi-list-task"></i>工单中心
+                </a>
+                <a class="nav-link" href="{{ url_for('worker.my_orders') }}">
+                    <i class="bi bi-briefcase"></i>我的工单
+                </a>
+                <a class="nav-link" href="{{ url_for('worker.elderly_list') }}">
+                    <i class="bi bi-people"></i>老人档案
+                </a>
+                <a class="nav-link" href="{{ url_for('worker.visits') }}">
+                    <i class="bi bi-geo-alt"></i>走访任务
+                </a>
+                <a class="nav-link active" href="{{ url_for('worker.follow_ups') }}">
+                    <i class="bi bi-telephone"></i>回访记录
+                </a>
+                <a class="nav-link" href="{{ url_for('worker.profile') }}">
+                    <i class="bi bi-person"></i>个人资料
+                </a>
+            </nav>
+        </div>
+        <div class="col-md-10 py-4 px-5 main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4><i class="bi bi-plus-circle text-primary me-2"></i>新建回访记录</h4>
+                <a href="{{ url_for('worker.follow_ups') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>返回列表
+                </a>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label">回访对象 <span class="text-danger">*</span></label>
+                                    <select class="form-select" name="elderly_id" required>
+                                        <option value="">请选择老人</option>
+                                        {% for elderly in elderly_users %}
+                                        <option value="{{ elderly.id }}">{{ elderly.real_name }} ({{ elderly.username }})</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">关联工单</label>
+                                    <select class="form-select" name="order_id">
+                                        <option value="">无关联工单</option>
+                                        {% for order in orders %}
+                                        <option value="{{ order.id }}">{{ order.service_type }} - {{ order.scheduled_time.strftime('%Y-%m-%d') if order.scheduled_time else '待定' }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">回访类型</label>
+                                    <select class="form-select" name="follow_up_type">
+                                        <option value="服务回访">服务回访</option>
+                                        <option value="健康回访">健康回访</option>
+                                        <option value="满意度调查">满意度调查</option>
+                                        <option value="其他">其他</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">满意度评分</label>
+                                    <select class="form-select" name="satisfaction_level">
+                                        <option value="5">非常满意</option>
+                                        <option value="4">满意</option>
+                                        <option value="3" selected>一般</option>
+                                        <option value="2">不满意</option>
+                                        <option value="1">非常不满意</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">反馈内容</label>
+                                    <textarea class="form-control" name="feedback" rows="3" placeholder="记录老人的反馈意见"></textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">发现问题</label>
+                                    <textarea class="form-control" name="issues_found" rows="2" placeholder="回访中发现的问题"></textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">解决方案</label>
+                                    <textarea class="form-control" name="resolution" rows="2" placeholder="针对问题的解决方案"></textarea>
+                                </div>
+                                
+                                <div class="d-flex justify-content-end">
+                                    <a href="{{ url_for('worker.follow_ups') }}" class="btn btn-secondary me-2">取消</a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-check-circle me-1"></i>提交记录
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

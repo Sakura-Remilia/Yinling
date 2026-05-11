@@ -1,0 +1,118 @@
+// 全局样式变量
+$primary-color: #0d6efd;
+$secondary-color: #6c757d;
+$success-color: #198754;
+$warning-color: #ffc107;
+$danger-color: #dc3545;
+$light-bg: #f8f9fa;
+$font-family: 'Microsoft YaHei', '微软雅黑', -apple-system, BlinkMacSystemFont, sans-serif;
+
+// 全局重置
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: $font-family;
+  background-color: $light-bg;
+  color: #333;
+}
+
+// 滚动条样式
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+// 卡片阴影
+.card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: none;
+}
+
+// 按钮过渡
+.btn {
+  transition: all 0.2s ease-in-out;
+}
+
+// 表格样式
+.table {
+  th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    border-bottom: 2px solid #dee2e6;
+  }
+}
+
+// 状态徽章
+.badge {
+  padding: 0.35em 0.65em;
+}
+
+// 分页样式
+.pagination {
+  margin: 0;
+}
+
+// 表单验证
+.is-invalid {
+  border-color: $danger-color;
+}
+
+.invalid-feedback {
+  color: $danger-color;
+}
+
+// 加载动画
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+// 空状态
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #6c757d;
+
+  i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+}
+
+// 老人模式字体放大
+.elderly-mode {
+  font-size: 1.125rem;
+
+  .card-body {
+    font-size: 1.125rem;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-size: 1.25em;
+  }
+}

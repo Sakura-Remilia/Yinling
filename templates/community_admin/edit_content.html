@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block title %}{{ '编辑公告' if content_type == 'announcement' else '编辑资讯' }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="row g-0 min-vh-100">
+        <div class="col-md-2 sidebar py-4">
+            <div class="text-center mb-4">
+                <img src="{{ url_for('static', filename='images/default_avatar.svg') }}"
+                     class="avatar-lg rounded-circle mb-2" alt="头像">
+                <h5>{{ current_user.real_name }}</h5>
+                <small class="text-muted">{% if current_user.is_super_admin() %}超级管理员{% else %}社区管理员{% endif %}</small>
+            </div>
+            <nav class="nav flex-column">
+                <a class="nav-link" href="{{ url_for('super_admin.dashboard' if current_user.is_super_admin() else 'community_admin.dashboard') }}">
+                    <i class="bi bi-speedometer2"></i>数据看板
+                </a>
+                {% if current_user.is_super_admin() %}
+                <a class="nav-link" href="{{ url_for('super_admin.communities') }}">
+                    <i class="bi bi-building"></i>社区管理
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.users') }}">
+                    <i class="bi bi-people"></i>用户管理
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.service_categories') }}">
+                    <i class="bi bi-list-ul"></i>服务类别
+                </a>
+                {% else %}
+                <a class="nav-link" href="{{ url_for('community_admin.elderly_list') }}">
+                    <i class="bi bi-people"></i>老人管理
+                </a>
+                <a class="nav-link" href="{{ url_for('community_admin.volunteers') }}">
+                    <i class="bi bi-person-heart"></i>志愿者管理
+                </a>
+                <a class="nav-link" href="{{ url_for('community_admin.workers') }}">
+                    <i class="bi bi-person-badge"></i>工作人员管理
+                </a>
+                <a class="nav-link" href="{{ url_for('community_admin.orders') }}">
+                    <i class="bi bi-list-check"></i>订单管理
+                </a>
+                <a class="nav-link" href="{{ url_for('community_admin.sos_list') }}">
+                    <i class="bi bi-exclamation-triangle"></i>SOS管理
+                </a>
+                <a class="nav-link" href="{{ url_for('community_admin.activities') }}">
+                    <i class="bi bi-calendar-event"></i>活动管理
+                </a>
+                {% endif %}
+                <a class="nav-link active" href="{{ url_for('community_admin.content_management') }}">
+                    <i class="bi bi-megaphone"></i>公告与资讯
+                </a>
+                {% if current_user.is_super_admin() %}
+                <a class="nav-link" href="{{ url_for('super_admin.point_products') }}">
+                    <i class="bi bi-gift"></i>积分商品
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.alert_rules') }}">
+                    <i class="bi bi-bell"></i>预警规则
+                </a>
+                {% else %}
+                <a class="nav-link" href="{{ url_for('community_admin.accounts') }}">
+                    <i class="bi bi-person-gear"></i>账号管理
+                </a>
+                {% endif %}
+                <a class="nav-link" href="{{ url_for('super_admin.profile' if current_user.is_super_admin() else 'community_admin.profile') }}">
+                    <i class="bi bi-person"></i>个人设置
+                </a>
+            </nav>
+        </div>
+        <div class="col-md-10 py-4 px-5 main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4>
+                    <i class="bi bi-{{ 'megaphone text-primary' if content_type == 'announcement' else 'newspaper text-success' }} me-2"></i>
+                    {{ '编辑公告' if content_type == 'announcement' else '编辑资讯' }}
+                </h4>
+                <a href="{{ url_for('community_admin.content_management') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>返回列表
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-body p-4">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">标题 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="title" name="title" required maxlength="200" value="{{ content.title }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="content" class="form-label">内容 <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="content" name="content" rows="10" required>{{ content.content }}</textarea>
+                        </div>
+
+                        {% if content_type == 'news' %}
+                        <div class="mb-3">
+                            <label for="news_type" class="form-label">资讯类型</label>
+                            <select class="form-select" id="news_type" name="news_type">
+                                <option value="news" {% if content.news_type == 'news' %}selected{% endif %}>时事新闻</option>
+                                <option value="notice" {% if content.news_type == 'community' %}selected{% endif %}>社区公告</option>
+                                <option value="health" {% if content.news_type == 'health' %}selected{% endif %}>健康资讯</option>
+                                <option value="anti_fraud" {% if content.news_type == 'anti_fraud' %}selected{% endif %}>防诈骗</option>
+                            </select>
+                        </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label for="cover_image" class="form-label">封面图片</label>
+                            <input type="hidden" name="cover_image" id="cover_image_input" value="{{ content.cover_image or '' }}">
+                            <div class="input-group">
+                                <input type="file" class="form-control" id="cover_image_file" accept="image/*">
+                                <button class="btn btn-outline-secondary" type="button" onclick="uploadCoverImage()">上传</button>
+                            </div>
+                            <div id="cover_image_preview" class="mt-2" style="{{ 'display:block' if content.cover_image else 'display:none' }};">
+                                <img src="{{ content.cover_image or '' }}" id="cover_image_img" style="max-height:150px; border-radius:8px;">
+                                <button type="button" class="btn btn-sm btn-outline-danger ms-2" onclick="removeCoverImage()">删除</button>
+                            </div>
+                        </div>
+
+                        {% if content_type == 'announcement' %}
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="is_pinned" name="is_pinned" {% if content.is_pinned %}checked{% endif %}>
+                            <label class="form-check-label" for="is_pinned">
+                                <strong>置顶公告</strong>
+                            </label>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="is_active" name="is_active" {% if content.is_active %}checked{% endif %}>
+                            <label class="form-check-label" for="is_active">
+                                <strong>公开显示</strong>
+                            </label>
+                        </div>
+                        {% else %}
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="is_published" name="is_published" {% if content.is_published %}checked{% endif %}>
+                            <label class="form-check-label" for="is_published">
+                                <strong>发布</strong>
+                            </label>
+                        </div>
+                        {% endif %}
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{{ url_for('community_admin.content_management') }}" class="btn btn-outline-secondary">取消</a>
+                            <button type="submit" class="btn btn-{{ 'primary' if content_type == 'announcement' else 'success' }}">
+                                <i class="bi bi-check-circle me-1"></i>保存修改
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function uploadCoverImage() {
+    const fileInput = document.getElementById('cover_image_file');
+    const file = fileInput.files[0];
+    if (!file) {
+        alert('请选择图片文件');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+        const response = await fetch('/api/v1/upload/image', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+        const result = await response.json();
+        if (result.success) {
+            document.getElementById('cover_image_input').value = result.data.url;
+            document.getElementById('cover_image_img').src = result.data.url;
+            document.getElementById('cover_image_preview').style.display = 'block';
+        } else {
+            alert('上传失败: ' + result.message);
+        }
+    } catch (e) {
+        alert('上传失败');
+    }
+}
+
+function removeCoverImage() {
+    document.getElementById('cover_image_input').value = '';
+    document.getElementById('cover_image_file').value = '';
+    document.getElementById('cover_image_preview').style.display = 'none';
+}
+</script>
+{% endblock %}

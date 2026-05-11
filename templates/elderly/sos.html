@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}紧急求助{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="mb-3">
+                <a href="{{ url_for('elderly.dashboard') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>返回首页
+                </a>
+            </div>
+            <div class="card shadow-lg border-0">
+                <div class="card-body py-5">
+                    <h2 class="text-danger mb-4">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>紧急求助 SOS
+                    </h2>
+                    <p class="text-muted mb-5">点击下方按钮，系统将立即通知您的紧急联系人并发送定位信息</p>
+                    
+                    <button id="sosBtn" class="sos-button alert-pulse mb-4" data-bs-toggle="modal" data-bs-target="#confirmModal">
+                        SOS
+                    </button>
+                    
+                    <div class="mt-4">
+                        <h5 class="text-muted">紧急联系人</h5>
+                        {% if current_user.elderly_profile %}
+                        <div class="row justify-content-center mt-3">
+                            {% if current_user.elderly_profile.emergency_contact %}
+                            <div class="col-md-4">
+                                <div class="card bg-light">
+                                    <div class="card-body py-3">
+                                        <i class="bi bi-person-fill text-primary"></i>
+                                        <p class="mb-1">{{ current_user.elderly_profile.emergency_contact }}</p>
+                                        <small class="text-muted">{{ current_user.elderly_profile.emergency_phone }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% if current_user.elderly_profile.emergency_contact2 %}
+                            <div class="col-md-4">
+                                <div class="card bg-light">
+                                    <div class="card-body py-3">
+                                        <i class="bi bi-person-fill text-primary"></i>
+                                        <p class="mb-1">{{ current_user.elderly_profile.emergency_contact2 }}</p>
+                                        <small class="text-muted">{{ current_user.elderly_profile.emergency_phone2 }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% else %}
+                        <p class="text-warning">请先在个人资料中设置紧急联系人</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="{{ url_for('elderly.profile') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-pencil me-2"></i>设置紧急联系人
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">确认发送SOS</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 4rem;"></i>
+                <h5 class="mt-3">确定要发送紧急求助吗？</h5>
+                <p class="text-muted">系统将通知您的紧急联系人</p>
+                <div id="countdown" class="d-none">
+                    <p class="text-danger fw-bold">倒计时: <span id="countdownNum">10</span> 秒</p>
+                    <p>如需取消，请点击"取消"按钮</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancelBtn">取消</button>
+                <button type="button" class="btn btn-danger" id="confirmBtn">确认发送</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="successModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">SOS已发送</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                <h5 class="mt-3">紧急求助已发送成功</h5>
+                <p class="text-muted">您的紧急联系人将收到通知</p>
+                <p class="text-muted">请保持手机畅通，等待救援</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">我知道了</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let countdownTimer;
+    let countdown = 10;
+    
+    document.getElementById('confirmBtn').addEventListener('click', function() {
+        const countdownDiv = document.getElementById('countdown');
+        const confirmBtn = this;
+        const cancelBtn = document.getElementById('cancelBtn');
+        
+        countdownDiv.classList.remove('d-none');
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = '发送中...';
+        
+        countdownTimer = setInterval(function() {
+            countdown--;
+            document.getElementById('countdownNum').textContent = countdown;
+            
+            if (countdown <= 0) {
+                clearInterval(countdownTimer);
+                sendSOS();
+            }
+        }, 1000);
+    });
+    
+    document.getElementById('cancelBtn').addEventListener('click', function() {
+        clearInterval(countdownTimer);
+        countdown = 10;
+        document.getElementById('countdown').classList.add('d-none');
+        document.getElementById('confirmBtn').disabled = false;
+        document.getElementById('confirmBtn').textContent = '确认发送';
+        document.getElementById('countdownNum').textContent = '10';
+    });
+    
+    function sendSOS() {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const data = {
+                longitude: position.coords.longitude,
+                latitude: position.coords.latitude,
+                address: ''
+            };
+            
+            fetch('{{ url_for("elderly.sos") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                bootstrap.Modal.getInstance(document.getElementById('confirmModal')).hide();
+                if (data.success) {
+                    new bootstrap.Modal(document.getElementById('successModal')).show();
+                }
+            });
+        }, function(error) {
+            fetch('{{ url_for("elderly.sos") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                bootstrap.Modal.getInstance(document.getElementById('confirmModal')).hide();
+                if (data.success) {
+                    new bootstrap.Modal(document.getElementById('successModal')).show();
+                }
+            });
+        });
+    }
+</script>
+{% endblock %}

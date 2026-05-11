@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}编辑积分商品{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="row g-0 min-vh-100">
+        <div class="col-md-2 sidebar py-4">
+            <div class="text-center mb-4">
+                <img src="{{ url_for('static', filename='images/default_avatar.svg') }}" 
+                     class="avatar-lg rounded-circle mb-2" alt="头像">
+                <h5>{{ current_user.real_name }}</h5>
+                <small class="text-muted">超级管理员</small>
+            </div>
+            <nav class="nav flex-column">
+                <a class="nav-link" href="{{ url_for('super_admin.dashboard') }}">
+                    <i class="bi bi-speedometer2"></i>数据概览
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.communities') }}">
+                    <i class="bi bi-building"></i>社区管理
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.users') }}">
+                    <i class="bi bi-people"></i>用户管理
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.service_categories') }}">
+                    <i class="bi bi-list-ul"></i>服务类别
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.content_management') }}">
+                    <i class="bi bi-megaphone"></i>公告与资讯
+                </a>
+                <a class="nav-link active" href="{{ url_for('super_admin.point_products') }}">
+                    <i class="bi bi-gift"></i>积分商品
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.alert_rules') }}">
+                    <i class="bi bi-bell"></i>预警规则
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.logs') }}">
+                    <i class="bi bi-journal-text"></i>系统日志
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.reports') }}">
+                    <i class="bi bi-file-earmark-bar-graph"></i>数据报表
+                </a>
+            </nav>
+        </div>
+        <div class="col-md-10 py-4 px-5 main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4><i class="bi bi-gift text-primary me-2"></i>编辑积分商品</h4>
+                <a href="{{ url_for('super_admin.point_products') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>返回列表
+                </a>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">商品名称 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="name" value="{{ product.name }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">描述</label>
+                            <textarea class="form-control" name="description" rows="3">{{ product.description or '' }}</textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">所需积分 <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" name="points_required" value="{{ product.points_required }}" min="1" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">库存</label>
+                                <input type="number" class="form-control" name="stock" value="{{ product.stock }}" min="0">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">状态</label>
+                                <div class="form-check form-switch mt-2">
+                                    <input class="form-check-input" type="checkbox" name="is_active" {% if product.is_active %}checked{% endif %}>
+                                    <label class="form-check-label">上架</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-lg me-1"></i>保存
+                            </button>
+                            <a href="{{ url_for('super_admin.point_products') }}" class="btn btn-outline-secondary">取消</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

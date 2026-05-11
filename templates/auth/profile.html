@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}个人设置{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h4 class="mb-0"><i class="bi bi-person-gear me-2"></i>个人设置</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="row mb-4">
+                            <div class="col-md-3 text-center">
+                                <img src="{{ url_for('static', filename='images/default_avatar.svg') }}"
+                                     class="avatar-lg rounded-circle mb-2" alt="头像">
+                                <p class="text-muted small">头像</p>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="mb-3">
+                                    <label class="form-label">用户名</label>
+                                    <input type="text" class="form-control" value="{{ current_user.username }}" disabled>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">手机号</label>
+                                    <input type="text" class="form-control" value="{{ current_user.phone }}" disabled>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">真实姓名</label>
+                                    <input type="text" class="form-control" name="real_name" value="{{ current_user.real_name }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">邮箱</label>
+                                    <input type="email" class="form-control" name="email" value="{{ current_user.email or '' }}">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <h5 class="mb-3"><i class="bi bi-key me-2"></i>修改密码</h5>
+                        <div class="mb-3">
+                            <label class="form-label">原密码</label>
+                            <input type="password" class="form-control" name="old_password" placeholder="如需修改密码请填写">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">新密码</label>
+                            <input type="password" class="form-control" name="new_password" placeholder="留空则不修改密码">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">确认新密码</label>
+                            <input type="password" class="form-control" name="confirm_password" placeholder="再次输入新密码">
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="javascript:history.back()" class="btn btn-outline-secondary">返回</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-lg me-1"></i>保存修改
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

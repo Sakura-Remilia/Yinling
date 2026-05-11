@@ -1,0 +1,36 @@
+<div class="text-center mb-4">
+    <img src="{{ url_for('static', filename='images/default_avatar.svg') }}" 
+         class="avatar-lg rounded-circle mb-2" alt="头像">
+    <h5>{{ current_user.real_name }}</h5>
+    <small class="text-muted">欢迎回来</small>
+</div>
+<nav class="nav flex-column">
+    <a class="nav-link {{ 'active' if request.endpoint == 'elderly.dashboard' }}" href="{{ url_for('elderly.dashboard') }}">
+        <i class="bi bi-house"></i>首页
+    </a>
+    <a class="nav-link {{ 'active' if request.endpoint == 'elderly.sos' }}" href="{{ url_for('elderly.sos') }}">
+        <i class="bi bi-exclamation-triangle text-danger"></i>紧急求助
+    </a>
+    <a class="nav-link {{ 'active' if request.endpoint == 'elderly.health' }}" href="{{ url_for('elderly.health') }}">
+        <i class="bi bi-heart-pulse"></i>健康监测
+    </a>
+    <a class="nav-link {{ 'active' if request.endpoint == 'elderly.services' }}" href="{{ url_for('elderly.services') }}">
+        <i class="bi bi-house-heart"></i>呼叫服务
+    </a>
+    <a class="nav-link {{ 'active' if request.endpoint == 'elderly.orders' }}" href="{{ url_for('elderly.orders') }}">
+        <i class="bi bi-list-check"></i>我的订单
+    </a>
+    <a class="nav-link {{ 'active' if request.endpoint == 'elderly.activities' }}" href="{{ url_for('elderly.activities') }}">
+        <i class="bi bi-calendar-heart"></i>活动广场
+    </a>
+    <a class="nav-link {{ 'active' if request.endpoint == 'elderly.news' }}" href="{{ url_for('elderly.news') }}">
+        <i class="bi bi-newspaper"></i>资讯中心
+    </a>
+    <a class="nav-link {{ 'active' if request.endpoint == 'elderly.profile' }}" href="{{ url_for('elderly.profile') }}">
+        <i class="bi bi-person"></i>个人资料
+    </a>
+    <hr>
+    <a class="nav-link" href="{{ url_for('elderly.mobile_view') }}">
+        <i class="bi bi-phone"></i>大字模式
+    </a>
+</nav>

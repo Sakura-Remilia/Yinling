@@ -1,0 +1,439 @@
+{% extends "base.html" %}
+
+{% block title %}首页{% endblock %}
+
+{% block content %}
+<!-- 自定义模态框 -->
+<div class="modal fade" id="contentModal" tabindex="-1" aria-labelledby="contentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="contentModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="关闭"></button>
+            </div>
+            <div class="modal-body" id="contentModalBody" style="white-space: pre-line;"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="hero-section bg-gradient-primary text-white py-5" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold">银龄社区</h1>
+                <p class="lead">适老化智慧服务平台</p>
+                <p class="mb-4">我们致力于为老年人提供便捷、贴心的社区服务，包括紧急求助、健康监测、上门服务、活动社交等全方位关怀。</p>
+            </div>
+            <div class="col-lg-6 text-center d-none d-lg-block">
+                <i class="bi bi-people-fill" style="font-size: 15rem; opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <h2 class="text-center mb-5">平台特色服务</h2>
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card h-100 text-center p-4">
+                <div class="service-icon bg-danger text-white mx-auto">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+                <h5 class="card-title mt-3">紧急求助 SOS</h5>
+                <p class="card-text text-muted">一键呼叫紧急联系人，快速获得帮助</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 text-center p-4">
+                <div class="service-icon bg-success text-white mx-auto">
+                    <i class="bi bi-heart-pulse-fill"></i>
+                </div>
+                <h5 class="card-title mt-3">健康监测</h5>
+                <p class="card-text text-muted">记录血压血糖，设置用药提醒</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 text-center p-4">
+                <div class="service-icon bg-primary text-white mx-auto">
+                    <i class="bi bi-house-heart-fill"></i>
+                </div>
+                <h5 class="card-title mt-3">上门服务</h5>
+                <p class="card-text text-muted">家政清洁、陪诊送餐等贴心服务</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 text-center p-4">
+                <div class="service-icon bg-warning text-white mx-auto">
+                    <i class="bi bi-calendar-heart-fill"></i>
+                </div>
+                <h5 class="card-title mt-3">活动社交</h5>
+                <p class="card-text text-muted">丰富活动，结交朋友，快乐生活</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 社区公告与资讯 -->
+<div class="container py-5">
+    <h2 class="text-center mb-4">社区动态</h2>
+    <div class="row g-4">
+        <!-- 左栏：社区公告 -->
+        <div class="col-lg-6">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0"><i class="bi bi-megaphone-fill me-2"></i>社区公告</h5>
+                </div>
+                <div class="card-body p-0" id="announcements-list">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p class="mt-2 text-muted">加载中...</p>
+                    </div>
+                </div>
+                <div class="card-footer text-center border-0 bg-white">
+                    <a href="#" onclick="showMoreAnnouncements(); return false;" class="text-primary text-decoration-none">查看更多公告 &raquo;</a>
+                </div>
+            </div>
+        </div>
+        <!-- 右栏：社区资讯 -->
+        <div class="col-lg-6">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-header bg-success text-white py-3">
+                    <h5 class="mb-0"><i class="bi bi-newspaper me-2"></i>健康资讯</h5>
+                </div>
+                <div class="card-body p-0" id="news-list">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-success" role="status"></div>
+                        <p class="mt-2 text-muted">加载中...</p>
+                    </div>
+                </div>
+                <div class="card-footer text-center border-0 bg-white">
+                    <a href="#" onclick="showMoreNews(); return false;" class="text-success text-decoration-none">查看更多资讯 &raquo;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">服务角色</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-person-heart text-danger" style="font-size: 4rem;"></i>
+                        <h4 class="mt-3">老人</h4>
+                        <p class="text-muted">服务的享受者，被关怀的中心</p>
+                        <ul class="list-unstyled text-start">
+                            <li><i class="bi bi-check-circle text-success me-2"></i>紧急求助功能</li>
+                            <li><i class="bi bi-check-circle text-success me-2"></i>健康数据管理</li>
+                            <li><i class="bi bi-check-circle text-success me-2"></i>一键呼叫服务</li>
+                            <li><i class="bi bi-check-circle text-success me-2"></i>活动报名参与</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-people-fill text-primary" style="font-size: 4rem;"></i>
+                        <h4 class="mt-3">志愿者</h4>
+                        <p class="text-muted">服务的执行者，温情的传递者</p>
+                        <ul class="list-unstyled text-start">
+                            <li><i class="bi bi-check-circle text-success me-2"></i>任务接单中心</li>
+                            <li><i class="bi bi-check-circle text-success me-2"></i>服务打卡记录</li>
+                            <li><i class="bi bi-check-circle text-success me-2"></i>积分时长累积</li>
+                            <li><i class="bi bi-check-circle text-success me-2"></i>积分兑换商城</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-person-badge-fill text-success" style="font-size: 4rem;"></i>
+                        <h4 class="mt-3">工作人员</h4>
+                        <p class="text-muted">专业的服务提供者</p>
+                        <ul class="list-unstyled text-start">
+                            <li><i class="bi bi-check-circle text-success me-2"></i>工单处理系统</li>
+                            <li><i class="bi bi-check-circle text-success me-2"></i>老人档案管理</li>
+                            <li><i class="bi bi-check-circle text-success me-2"></i>走访任务执行</li>
+                            <li><i class="bi bi-check-circle text-success me-2"></i>服务质量回访</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <h2 class="text-center mb-5">安全保障</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="d-flex align-items-start mb-4">
+                <div class="me-3 flex-shrink-0" style="width: 2rem;">
+                    <i class="bi bi-shield-check text-success" style="font-size: 2rem;"></i>
+                </div>
+                <div>
+                    <h5>人员审核</h5>
+                    <p class="text-muted">所有志愿者和工作人员都经过严格审核，确保服务安全可靠</p>
+                </div>
+            </div>
+            <div class="d-flex align-items-start mb-4">
+                <div class="me-3 flex-shrink-0" style="width: 2rem;">
+                    <i class="bi bi-geo-alt text-primary" style="font-size: 2rem;"></i>
+                </div>
+                <div>
+                    <h5>定位追踪</h5>
+                    <p class="text-muted">服务过程中实时定位，确保服务人员准时到达</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="d-flex align-items-start mb-4">
+                <div class="me-3 flex-shrink-0" style="width: 2rem;">
+                    <i class="bi bi-clock-history text-warning" style="font-size: 2rem;"></i>
+                </div>
+                <div>
+                    <h5>服务留痕</h5>
+                    <p class="text-muted">完整记录服务过程，有据可查，保障双方权益</p>
+                </div>
+            </div>
+            <div class="d-flex align-items-start mb-4">
+                <div class="me-3 flex-shrink-0" style="width: 2rem;">
+                    <i class="bi bi-star text-danger" style="font-size: 2rem;"></i>
+                </div>
+                <div>
+                    <h5>评价反馈</h5>
+                    <p class="text-muted">服务完成后可进行评价，持续提升服务质量</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 加载社区公告
+    fetchAnnouncements();
+    // 加载健康资讯
+    fetchNews();
+});
+
+function fetchAnnouncements() {
+    fetch('/api/v1/public/announcements?per_page=5')
+        .then(response => response.json())
+        .then(result => {
+            if (result.success && result.data.length > 0) {
+                renderAnnouncements(result.data);
+            } else {
+                renderEmptyAnnouncements();
+            }
+        })
+        .catch(error => {
+            console.error('加载公告失败:', error);
+            renderEmptyAnnouncements();
+        });
+}
+
+function renderAnnouncements(announcements) {
+    const container = document.getElementById('announcements-list');
+    let html = '<ul class="list-group list-group-flush">';
+    announcements.forEach(item => {
+        const pinned = item.is_pinned ? '<span class="badge bg-danger me-2">置顶</span>' : '';
+        const date = item.published_at ? new Date(item.published_at).toLocaleDateString('zh-CN') : '';
+        const content = item.content ? item.content.substring(0, 50) : '';
+        html += `
+            <li class="list-group-item">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="ms-2 me-auto">
+                        ${pinned}<a href="#" onclick="checkLoginAndViewAnnouncement(${item.id}); return false;" class="text-decoration-none text-dark">${item.title}</a>
+                        <p class="mb-0 text-muted small">${content}...</p>
+                    </div>
+                    <small class="text-muted">${date}</small>
+                </div>
+            </li>
+        `;
+    });
+    html += '</ul>';
+    container.innerHTML = html;
+}
+
+function renderEmptyAnnouncements() {
+    const container = document.getElementById('announcements-list');
+    container.innerHTML = '<div class="text-center py-4 text-muted">暂无公告</div>';
+}
+
+function fetchNews() {
+    fetch('/api/v1/public/news?per_page=5&type=health')
+        .then(response => response.json())
+        .then(result => {
+            // 如果没有health类型的，就获取所有新闻
+            if (result.success && result.data.length > 0) {
+                renderNews(result.data);
+            } else {
+                fetchAllNews();
+            }
+        })
+        .catch(error => {
+            console.error('加载资讯失败:', error);
+            renderEmptyNews();
+        });
+}
+
+function fetchAllNews() {
+    fetch('/api/v1/public/news?per_page=5')
+        .then(response => response.json())
+        .then(result => {
+            if (result.success && result.data.length > 0) {
+                renderNews(result.data);
+            } else {
+                renderEmptyNews();
+            }
+        })
+        .catch(error => {
+            console.error('加载资讯失败:', error);
+            renderEmptyNews();
+        });
+}
+
+function renderNews(newsList) {
+    const container = document.getElementById('news-list');
+    let html = '<ul class="list-group list-group-flush">';
+    newsList.forEach(item => {
+        const date = item.created_at ? new Date(item.created_at).toLocaleDateString('zh-CN') : '';
+        html += `
+            <li class="list-group-item">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="ms-2 me-auto">
+                        <a href="#" onclick="checkLoginAndViewNews(${item.id}); return false;" class="text-decoration-none text-dark">${item.title}</a>
+                        <p class="mb-0 text-muted small">${item.content ? item.content.substring(0, 50) : ''}...</p>
+                    </div>
+                    <small class="text-muted">${date}</small>
+                </div>
+            </li>
+        `;
+    });
+    html += '</ul>';
+    container.innerHTML = html;
+}
+
+function renderEmptyNews() {
+    const container = document.getElementById('news-list');
+    container.innerHTML = '<div class="text-center py-4 text-muted">暂无资讯</div>';
+}
+
+function checkLoginAndViewNews(newsId) {
+    // 获取本地存储的token进行简单验证
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('请先登录后再查看资讯详情');
+        window.location.href = '/auth/login';
+        return;
+    }
+    // 跳转到老人端资讯详情页（老人角色）
+    window.location.href = '/elderly/news/' + newsId;
+}
+
+function checkLoginAndViewAnnouncement(announcementId) {
+    // 获取本地存储的token进行简单验证
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('请先登录后再查看公告详情');
+        window.location.href = '/auth/login';
+        return;
+    }
+    // 获取公告详情并弹窗显示
+    fetch('/api/v1/public/announcements?community_id=&per_page=100')
+        .then(response => response.json())
+        .then(result => {
+            if (result.success && result.data) {
+                const announcement = result.data.find(a => a.id === announcementId);
+                if (announcement) {
+                    // 显示模态框
+                    const pinned = announcement.is_pinned ? '【置顶】' : '';
+                    document.getElementById('contentModalLabel').textContent = pinned + announcement.title;
+                    document.getElementById('contentModalBody').textContent = announcement.content + '\n\n发布时间：' + new Date(announcement.published_at).toLocaleString('zh-CN');
+                    const modal = new bootstrap.Modal(document.getElementById('contentModal'));
+                    modal.show();
+                } else {
+                    alert('公告未找到');
+                }
+            }
+        })
+        .catch(error => {
+            console.error('加载公告失败:', error);
+            alert('加载公告失败，请稍后重试');
+        });
+}
+
+function showMoreAnnouncements() {
+    // 获取本地存储的token进行简单验证
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('请先登录后再查看公告列表');
+        window.location.href = '/auth/login';
+        return;
+    }
+    // 获取所有公告并弹窗显示
+    fetch('/api/v1/public/announcements?community_id=&per_page=100')
+        .then(response => response.json())
+        .then(result => {
+            if (result.success && result.data && result.data.length > 0) {
+                let msg = '【社区公告列表】\n\n';
+                result.data.forEach((item, index) => {
+                    const pinned = item.is_pinned ? '【置顶】' : '';
+                    const date = item.published_at ? new Date(item.published_at).toLocaleDateString('zh-CN') : '';
+                    msg += `${index + 1}. ${pinned}${item.title}\n   发布时间：${date}\n\n`;
+                });
+                document.getElementById('contentModalLabel').textContent = '社区公告列表';
+                document.getElementById('contentModalBody').textContent = msg;
+                const modal = new bootstrap.Modal(document.getElementById('contentModal'));
+                modal.show();
+            } else {
+                alert('暂无公告');
+            }
+        })
+        .catch(error => {
+            console.error('加载公告失败:', error);
+            alert('加载公告失败，请稍后重试');
+        });
+}
+
+function showMoreNews() {
+    // 获取本地存储的token进行简单验证
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('请先登录后再查看资讯列表');
+        window.location.href = '/auth/login';
+        return;
+    }
+    // 获取所有资讯并弹窗显示
+    fetch('/api/v1/public/news?per_page=100')
+        .then(response => response.json())
+        .then(result => {
+            if (result.success && result.data && result.data.length > 0) {
+                let msg = '【健康资讯列表】\n\n';
+                result.data.forEach((item, index) => {
+                    const date = item.created_at ? new Date(item.created_at).toLocaleDateString('zh-CN') : '';
+                    msg += `${index + 1}. ${item.title}\n   类型：${item.news_type || '新闻'} | 发布时间：${date}\n\n`;
+                });
+                document.getElementById('contentModalLabel').textContent = '健康资讯列表';
+                document.getElementById('contentModalBody').textContent = msg;
+                const modal = new bootstrap.Modal(document.getElementById('contentModal'));
+                modal.show();
+            } else {
+                alert('暂无资讯');
+            }
+        })
+        .catch(error => {
+            console.error('加载资讯失败:', error);
+            alert('加载资讯失败，请稍后重试');
+        });
+}
+</script>
+{% endblock %}

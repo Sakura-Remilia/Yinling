@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \":*)",
+      "Bash(python manage.py)",
+      "Bash(python -c \"import core.settings\")",
+      "Bash(python manage.py check --verbosity 2)",
+      "Bash(py -c \"print\\('hello'\\)\")",
+      "Bash(python3 -c \"print\\('hello'\\)\")",
+      "Bash(py manage.py check)",
+      "Bash(py -c \"import django; print\\(django.__version__\\)\")",
+      "Bash(py -c \"import sys; print\\(sys.version\\); print\\(sys.executable\\)\")",
+      "Bash(echo \"Exit: $?\")",
+      "Bash(py manage.py version)",
+      "Bash(py -c \"import os; os.chdir\\('c:/Users/18334/Desktop/YL3.18/yinling_project'\\); import django; print\\(django.get_version\\(\\)\\)\")",
+      "Bash(py -c ':*)",
+      "Bash(py fix_remaining.py)",
+      "Bash(npm --version)",
+      "Bash(python app/__init__.py)",
+      "Bash(grep -rh \"^def \" app/api_v1/*.py)",
+      "Bash(grep -h \"@api_v1.route\" \"c:\\\\Users\\\\18334\\\\Desktop\\\\YL3.18\\\\app\\\\api_v1\"/*.py)",
+      "Bash(.venv/Scripts/python.exe init_content_data.py)",
+      "Bash(python init_content_data.py)",
+      "Bash(python3 init_content_data.py)",
+      "Bash(mkdir -p sql)",
+      "Bash(mv yinling_community.sql sql/)",
+      "Bash(mysql --version)",
+      "Bash(where mysql *)",
+      "Bash(mysql *)"
+    ]
+  }
+}

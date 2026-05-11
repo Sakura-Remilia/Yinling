@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}订单管理{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="row g-0 min-vh-100">
+        <div class="col-md-2 sidebar py-4">
+            <div class="text-center mb-4">
+                <img src="{{ url_for('static', filename='images/default_avatar.svg') }}" 
+                     class="avatar-lg rounded-circle mb-2" alt="头像">
+                <h5>{{ current_user.real_name }}</h5>
+                <small class="text-muted">社区管理员</small>
+            </div>
+            <nav class="nav flex-column">
+                <a class="nav-link" href="{{ url_for('community_admin.dashboard') }}">
+                    <i class="bi bi-speedometer2"></i>数据看板
+                </a>
+                <a class="nav-link" href="{{ url_for('community_admin.elderly_list') }}">
+                    <i class="bi bi-people"></i>老人管理
+                </a>
+                <a class="nav-link" href="{{ url_for('community_admin.volunteers') }}">
+                    <i class="bi bi-person-heart"></i>志愿者管理
+                </a>
+                <a class="nav-link" href="{{ url_for('community_admin.workers') }}">
+                    <i class="bi bi-person-badge"></i>工作人员管理
+                </a>
+                <a class="nav-link active" href="{{ url_for('community_admin.orders') }}">
+                    <i class="bi bi-list-check"></i>订单管理
+                </a>
+                <a class="nav-link" href="{{ url_for('community_admin.sos_list') }}">
+                    <i class="bi bi-exclamation-triangle"></i>SOS管理
+                </a>
+                <a class="nav-link" href="{{ url_for('community_admin.activities') }}">
+                    <i class="bi bi-calendar-event"></i>活动管理
+                </a>
+                <a class="nav-link" href="{{ url_for('community_admin.accounts') }}">
+                    <i class="bi bi-person-gear"></i>账号管理
+                </a>
+                <a class="nav-link" href="{{ url_for('community_admin.alerts') }}">
+                    <i class="bi bi-bell"></i>预警通知
+                </a>
+                <a class="nav-link" href="{{ url_for('community_admin.profile') }}">
+                    <i class="bi bi-person"></i>个人设置
+                </a>
+            </nav>
+        </div>
+        <div class="col-md-10 py-4 px-5 main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4><i class="bi bi-list-check text-primary me-2"></i>订单管理</h4>
+                <div class="btn-group">
+                    <a href="{{ url_for('community_admin.orders') }}" class="btn btn-sm btn-outline-secondary {% if not status %}active{% endif %}">全部</a>
+                    <a href="{{ url_for('community_admin.orders', status='pending') }}" class="btn btn-sm btn-outline-secondary {% if status == 'pending' %}active{% endif %}">待处理</a>
+                    <a href="{{ url_for('community_admin.orders', status='accepted') }}" class="btn btn-sm btn-outline-secondary {% if status == 'accepted' %}active{% endif %}">已接单</a>
+                    <a href="{{ url_for('community_admin.orders', status='completed') }}" class="btn btn-sm btn-outline-secondary {% if status == 'completed' %}active{% endif %}">已完成</a>
+                </div>
+            </div>
+            
+            {% if orders %}
+            <div class="table-responsive">
+                <table class="table table-hover bg-white">
+                    <thead>
+                        <tr>
+                            <th>订单编号</th>
+                            <th>服务类型</th>
+                            <th>服务对象</th>
+                            <th>服务地址</th>
+                            <th>预约时间</th>
+                            <th>状态</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td>{{ order.order_no }}</td>
+                            <td>
+                                <i class="bi bi-hand-index text-primary me-1"></i>{{ order.service_type }}
+                            </td>
+                            <td>{{ order.elderly.real_name if order.elderly else '未知' }}</td>
+                            <td>{{ order.address or '未填写' }}</td>
+                            <td>{{ order.scheduled_time.strftime('%Y-%m-%d %H:%M') if order.scheduled_time else '待定' }}</td>
+                            <td>
+                                <span class="badge status-{{ order.status }}">{{ order.status_text }}</span>
+                            </td>
+                            <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                <a href="{{ url_for('elderly.order_detail', order_id=order.id) }}" 
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i> 查看
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="bi bi-list-check" style="font-size: 4rem; color: #ccc;"></i>
+                    <h5 class="mt-3 text-muted">暂无订单</h5>
+                    <p class="text-muted">当前社区还没有服务订单</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

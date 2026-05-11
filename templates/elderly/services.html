@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}服务列表{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="row g-0 min-vh-100 elderly-layout">
+        <div class="col-md-2 sidebar py-4">
+            {% include 'elderly/_sidebar.html' %}
+        </div>
+        <div class="col-md-10 py-4 px-5 main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4><i class="bi bi-house-heart text-primary me-2"></i>一键呼叫服务</h4>
+            </div>
+            
+            <div class="row g-4">
+                {% for category in categories %}
+                <div class="col-md-3">
+                    <div class="card h-100 text-center">
+                        <div class="card-body p-4">
+                            <div class="service-icon mx-auto mb-3 
+                                {% if category.is_free %}bg-success text-white{% else %}bg-primary text-white{% endif %}">
+                                {% if '助浴' in category.name %}
+                                <i class="bi bi-droplet"></i>
+                                {% elif '家政' in category.name or '清洁' in category.name %}
+                                <i class="bi bi-stars"></i>
+                                {% elif '理发' in category.name %}
+                                <i class="bi bi-scissors"></i>
+                                {% elif '陪诊' in category.name %}
+                                <i class="bi bi-hospital"></i>
+                                {% elif '送餐' in category.name %}
+                                <i class="bi bi-cup-hot"></i>
+                                {% elif '陪伴' in category.name %}
+                                <i class="bi bi-chat-heart"></i>
+                                {% else %}
+                                <i class="bi bi-hand-index"></i>
+                                {% endif %}
+                            </div>
+                            <h5 class="card-title">{{ category.name }}</h5>
+                            <p class="card-text text-muted small">{{ category.description or '专业服务' }}</p>
+                            {% if category.is_free %}
+                            <span class="badge bg-success mb-2">志愿服务</span>
+                            {% else %}
+                            <span class="badge bg-primary mb-2">{{ category.price_range or '付费服务' }}</span>
+                            {% endif %}
+                            <br>
+                            <a href="{{ url_for('elderly.order_service', category_id=category.id) }}" 
+                               class="btn btn-outline-primary btn-sm mt-2">
+                                <i class="bi bi-plus-circle me-1"></i>预约
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="col-12">
+                    <div class="text-center text-muted py-5">
+                        <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+                        <p class="mt-3">暂无可用服务</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

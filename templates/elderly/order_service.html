@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}预约服务 - {{ category.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="row g-0 min-vh-100 elderly-layout">
+        <div class="col-md-2 sidebar py-4">
+            {% include 'elderly/_sidebar.html' %}
+        </div>
+        <div class="col-md-10 py-4 px-5 main-content">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('elderly.services') }}">服务列表</a></li>
+                    <li class="breadcrumb-item active">{{ category.name }}</li>
+                </ol>
+            </nav>
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-calendar-plus text-primary me-2"></i>预约{{ category.name }}
+                                {% if category.is_free %}
+                                <span class="badge bg-success ms-2">志愿服务</span>
+                                {% else %}
+                                <span class="badge bg-primary ms-2">付费服务</span>
+                                {% endif %}
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label">服务地址 *</label>
+                                    <input type="text" class="form-control" name="address" required
+                                           value="{{ current_user.elderly_profile.address if current_user.elderly_profile else '' }}"
+                                           placeholder="请输入详细地址">
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">联系电话</label>
+                                        <input type="tel" class="form-control" name="contact_phone"
+                                               value="{{ current_user.phone }}">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">预约时间</label>
+                                        <input type="datetime-local" class="form-control" name="scheduled_time">
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">服务说明</label>
+                                    <textarea class="form-control" name="description" rows="4"
+                                              placeholder="请描述您的具体需求..."></textarea>
+                                </div>
+                                
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    {% if category.is_free %}
+                                    此服务为志愿服务，将由志愿者为您提供服务。
+                                    {% else %}
+                                    此服务为付费服务，将由专业工作人员为您提供服务。
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="d-flex gap-2">
+                                    <a href="{{ url_for('elderly.services') }}" class="btn btn-secondary">
+                                        <i class="bi bi-arrow-left me-2"></i>返回
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-check-circle me-2"></i>确认预约
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h6 class="mb-0">服务说明</h6>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted">{{ category.description or '专业、贴心的服务，让您安心、放心。' }}</p>
+                            {% if not category.is_free and category.price_range %}
+                            <p><strong>参考价格：</strong>{{ category.price_range }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-3">
+                        <div class="card-header bg-white">
+                            <h6 class="mb-0">服务流程</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="timeline">
+                                <div class="timeline-item">
+                                    <small class="text-primary">步骤1</small>
+                                    <p class="mb-1">提交预约</p>
+                                </div>
+                                <div class="timeline-item">
+                                    <small class="text-primary">步骤2</small>
+                                    <p class="mb-1">等待接单</p>
+                                </div>
+                                <div class="timeline-item">
+                                    <small class="text-primary">步骤3</small>
+                                    <p class="mb-1">服务人员上门</p>
+                                </div>
+                                <div class="timeline-item">
+                                    <small class="text-primary">步骤4</small>
+                                    <p class="mb-1">服务完成评价</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}老人首页{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="row g-0 min-vh-100 elderly-layout">
+        <div class="col-md-2 sidebar py-4">
+            <div class="text-center mb-4">
+                <img src="{{ url_for('static', filename='images/default_avatar.svg') }}" 
+                     class="avatar-lg rounded-circle mb-2" alt="头像">
+                <h5>{{ current_user.real_name }}</h5>
+                <small class="text-muted">欢迎回来</small>
+            </div>
+            <nav class="nav flex-column">
+                <a class="nav-link active" href="{{ url_for('elderly.dashboard') }}">
+                    <i class="bi bi-house"></i>首页
+                </a>
+                <a class="nav-link" href="{{ url_for('elderly.sos') }}">
+                    <i class="bi bi-exclamation-triangle text-danger"></i>紧急求助
+                </a>
+                <a class="nav-link" href="{{ url_for('elderly.health') }}">
+                    <i class="bi bi-heart-pulse"></i>健康监测
+                </a>
+                <a class="nav-link" href="{{ url_for('elderly.services') }}">
+                    <i class="bi bi-house-heart"></i>呼叫服务
+                </a>
+                <a class="nav-link" href="{{ url_for('elderly.orders') }}">
+                    <i class="bi bi-list-check"></i>我的订单
+                </a>
+                <a class="nav-link" href="{{ url_for('elderly.activities') }}">
+                    <i class="bi bi-calendar-heart"></i>活动广场
+                </a>
+                <a class="nav-link" href="{{ url_for('elderly.news') }}">
+                    <i class="bi bi-newspaper"></i>资讯中心
+                </a>
+                <a class="nav-link" href="{{ url_for('elderly.profile') }}">
+                    <i class="bi bi-person"></i>个人资料
+                </a>
+                <hr>
+                <a class="nav-link" href="{{ url_for('elderly.mobile_view') }}">
+                    <i class="bi bi-phone"></i>大字模式
+                </a>
+            </nav>
+        </div>
+        <div class="col-md-10 py-4 px-5 main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4>首页概览</h4>
+                <span class="text-muted">{{ now.strftime('%Y年%m月%d日') }}</span>
+            </div>
+            
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <h3>{{ pending_orders }}</h3>
+                        <p><i class="bi bi-clock me-2"></i>待处理订单</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card success">
+                        <h3>{{ in_progress_orders }}</h3>
+                        <p><i class="bi bi-spinner me-2"></i>进行中订单</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card warning">
+                        <h3>{{ upcoming_activities }}</h3>
+                        <p><i class="bi bi-calendar-event me-2"></i>待参加活动</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <a href="{{ url_for('elderly.sos') }}" class="text-decoration-none">
+                        <div class="stat-card" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
+                            <h3><i class="bi bi-exclamation-triangle"></i></h3>
+                            <p>紧急求助</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0"><i class="bi bi-lightning-charge text-warning me-2"></i>快捷服务</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-4">
+                                    <a href="{{ url_for('elderly.order_service', category_id=1) }}" class="text-decoration-none">
+                                        <div class="text-center p-3 bg-light rounded">
+                                            <i class="bi bi-droplet text-primary" style="font-size: 2rem;"></i>
+                                            <p class="mt-2 mb-0 text-dark">助浴服务</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-4">
+                                    <a href="{{ url_for('elderly.order_service', category_id=2) }}" class="text-decoration-none">
+                                        <div class="text-center p-3 bg-light rounded">
+                                            <i class="bi bi-stars text-success" style="font-size: 2rem;"></i>
+                                            <p class="mt-2 mb-0 text-dark">家政清洁</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-4">
+                                    <a href="{{ url_for('elderly.order_service', category_id=3) }}" class="text-decoration-none">
+                                        <div class="text-center p-3 bg-light rounded">
+                                            <i class="bi bi-scissors text-danger" style="font-size: 2rem;"></i>
+                                            <p class="mt-2 mb-0 text-dark">理发服务</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-4">
+                                    <a href="{{ url_for('elderly.order_service', category_id=4) }}" class="text-decoration-none">
+                                        <div class="text-center p-3 bg-light rounded">
+                                            <i class="bi bi-hospital text-info" style="font-size: 2rem;"></i>
+                                            <p class="mt-2 mb-0 text-dark">陪诊服务</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-4">
+                                    <a href="{{ url_for('elderly.order_service', category_id=5) }}" class="text-decoration-none">
+                                        <div class="text-center p-3 bg-light rounded">
+                                            <i class="bi bi-cup-hot text-warning" style="font-size: 2rem;"></i>
+                                            <p class="mt-2 mb-0 text-dark">送餐服务</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-4">
+                                    <a href="{{ url_for('elderly.services') }}" class="text-decoration-none">
+                                        <div class="text-center p-3 bg-light rounded">
+                                            <i class="bi bi-three-dots text-secondary" style="font-size: 2rem;"></i>
+                                            <p class="mt-2 mb-0 text-dark">更多服务</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0"><i class="bi bi-bell text-primary me-2"></i>提醒事项</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="timeline">
+                                <div class="timeline-item">
+                                    <small class="text-muted">今天 10:00</small>
+                                    <p class="mb-1">服用降压药</p>
+                                </div>
+                                <div class="timeline-item">
+                                    <small class="text-muted">明天 09:00</small>
+                                    <p class="mb-1">复诊提醒 - 市人民医院</p>
+                                </div>
+                                <div class="timeline-item">
+                                    <small class="text-muted">后天 14:00</small>
+                                    <p class="mb-1">书法班活动</p>
+                                </div>
+                            </div>
+                            <a href="{{ url_for('elderly.medication') }}" class="btn btn-outline-primary btn-sm w-100 mt-3">
+                                管理提醒
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const now = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+    });
+</script>
+{% endblock %}

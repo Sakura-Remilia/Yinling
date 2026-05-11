@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}我的订单{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="row g-0 min-vh-100 elderly-layout">
+        <div class="col-md-2 sidebar py-4">
+            {% include 'elderly/_sidebar.html' %}
+        </div>
+        <div class="col-md-10 py-4 px-5 main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4><i class="bi bi-list-check text-primary me-2"></i>我的订单</h4>
+            </div>
+            
+            <ul class="nav nav-tabs mb-4">
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if not request.args.get('status') }}" 
+                       href="{{ url_for('elderly.orders') }}">全部</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.args.get('status') == 'pending' }}" 
+                       href="{{ url_for('elderly.orders', status='pending') }}">待接单</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.args.get('status') == 'accepted' }}" 
+                       href="{{ url_for('elderly.orders', status='accepted') }}">已接单</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.args.get('status') == 'in_progress' }}" 
+                       href="{{ url_for('elderly.orders', status='in_progress') }}">服务中</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.args.get('status') == 'completed' }}" 
+                       href="{{ url_for('elderly.orders', status='completed') }}">已完成</a>
+                </li>
+            </ul>
+            
+            {% if orders %}
+            <div class="row g-4">
+                {% for order in orders %}
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h6 class="mb-1">{{ order.service_type }}</h6>
+                                    <small class="text-muted">订单号: {{ order.order_no }}</small>
+                                </div>
+                                <span class="status-badge status-{{ order.status }}">
+                                    {% if order.status == 'pending' %}待接单
+                                    {% elif order.status == 'accepted' %}已接单
+                                    {% elif order.status == 'in_progress' %}服务中
+                                    {% elif order.status == 'completed' %}已完成
+                                    {% elif order.status == 'cancelled' %}已取消
+                                    {% else %}{{ order.status }}{% endif %}
+                                </span>
+                            </div>
+                            <p class="mb-2"><i class="bi bi-geo-alt text-muted me-2"></i>{{ order.address }}</p>
+                            <p class="mb-2"><i class="bi bi-clock text-muted me-2"></i>
+                                {{ order.created_at.strftime('%Y-%m-%d %H:%M') }}
+                            </p>
+                            {% if order.scheduled_time %}
+                            <p class="mb-2"><i class="bi bi-calendar text-muted me-2"></i>
+                                预约时间: {{ order.scheduled_time.strftime('%Y-%m-%d %H:%M') }}
+                            </p>
+                            {% endif %}
+                            {% if order.provider %}
+                            <p class="mb-0"><i class="bi bi-person text-muted me-2"></i>
+                                服务人员: {{ order.provider.real_name }}
+                                {% if order.provider_type == 'volunteer' %}
+                                <span class="badge bg-success ms-1">志愿者</span>
+                                {% else %}
+                                <span class="badge bg-primary ms-1">工作人员</span>
+                                {% endif %}
+                            </p>
+                            {% endif %}
+                            <div class="mt-3">
+                                <a href="{{ url_for('elderly.order_detail', order_id=order.id) }}" 
+                                   class="btn btn-outline-primary btn-sm">
+                                    查看详情
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center text-muted py-5">
+                <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+                <p class="mt-3">暂无订单记录</p>
+                <a href="{{ url_for('elderly.services') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i>预约服务
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

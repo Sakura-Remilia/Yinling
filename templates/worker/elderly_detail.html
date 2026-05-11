@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}老人详情{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="row g-0 min-vh-100">
+        <div class="col-md-2 sidebar py-4">
+            <div class="text-center mb-4">
+                <img src="{{ url_for('static', filename='images/default_avatar.svg') }}" 
+                     class="avatar-lg rounded-circle mb-2" alt="头像">
+                <h5>{{ current_user.real_name }}</h5>
+                {% if current_user.worker_profile and current_user.worker_profile.is_verified %}
+                <span class="badge bg-success">已认证</span>
+                {% else %}
+                <span class="badge bg-warning">待审核</span>
+                {% endif %}
+            </div>
+            <nav class="nav flex-column">
+                <a class="nav-link" href="{{ url_for('worker.dashboard') }}">
+                    <i class="bi bi-house"></i>首页
+                </a>
+                <a class="nav-link" href="{{ url_for('worker.orders') }}">
+                    <i class="bi bi-list-task"></i>工单中心
+                </a>
+                <a class="nav-link" href="{{ url_for('worker.my_orders') }}">
+                    <i class="bi bi-briefcase"></i>我的工单
+                </a>
+                <a class="nav-link active" href="{{ url_for('worker.elderly_list') }}">
+                    <i class="bi bi-people"></i>老人档案
+                </a>
+                <a class="nav-link" href="{{ url_for('worker.visits') }}">
+                    <i class="bi bi-geo-alt"></i>走访任务
+                </a>
+                <a class="nav-link" href="{{ url_for('worker.follow_ups') }}">
+                    <i class="bi bi-telephone"></i>回访记录
+                </a>
+                <a class="nav-link" href="{{ url_for('worker.profile') }}">
+                    <i class="bi bi-person"></i>个人资料
+                </a>
+            </nav>
+        </div>
+        <div class="col-md-10 py-4 px-5 main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4><i class="bi bi-person-badge text-primary me-2"></i>老人详情</h4>
+                <a href="{{ url_for('worker.elderly_list') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>返回列表
+                </a>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <img src="{{ url_for('static', filename='images/default_avatar.svg') }}" 
+                                 class="avatar-lg rounded-circle mb-3" alt="头像">
+                            <h5>{{ elderly.real_name }}</h5>
+                            <p class="text-muted">{{ elderly.username }}</p>
+                            {% if elderly.elderly_profile %}
+                            <span class="badge bg-info">{{ elderly.elderly_profile.care_level or '普通' }}级照护</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h6 class="mb-0"><i class="bi bi-info-circle text-primary me-2"></i>基本信息</h6>
+                        </div>
+                        <div class="card-body">
+                            {% if elderly.elderly_profile %}
+                            <div class="mb-3">
+                                <small class="text-muted">性别</small>
+                                <p class="mb-0">
+                                    {% if elderly.elderly_profile.gender == 'male' %}男{% elif elderly.elderly_profile.gender == 'female' %}女{% else %}未填写{% endif %}
+                                </p>
+                            </div>
+                            <div class="mb-3">
+                                <small class="text-muted">出生日期</small>
+                                <p class="mb-0">{{ elderly.elderly_profile.birth_date.strftime('%Y-%m-%d') if elderly.elderly_profile.birth_date else '未填写' }}</p>
+                            </div>
+                            <div class="mb-3">
+                                <small class="text-muted">联系电话</small>
+                                <p class="mb-0">{{ elderly.phone or '未填写' }}</p>
+                            </div>
+                            <div class="mb-3">
+                                <small class="text-muted">居住地址</small>
+                                <p class="mb-0">{{ elderly.elderly_profile.address or '未填写' }}</p>
+                            </div>
+                            <div class="mb-3">
+                                <small class="text-muted">紧急联系人</small>
+                                <p class="mb-0">{{ elderly.elderly_profile.emergency_contact or '未填写' }}</p>
+                            </div>
+                            <div class="mb-3">
+                                <small class="text-muted">紧急联系电话</small>
+                                <p class="mb-0">{{ elderly.elderly_profile.emergency_phone or '未填写' }}</p>
+                            </div>
+                            {% else %}
+                            <p class="text-muted">暂无详细信息</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <div class="card mb-4">
+                        <div class="card-header bg-white">
+                            <h6 class="mb-0"><i class="bi bi-heart-pulse text-danger me-2"></i>健康状况</h6>
+                        </div>
+                        <div class="card-body">
+                            {% if elderly.elderly_profile %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>健康状况：</strong>{{ elderly.elderly_profile.health_status or '良好' }}</p>
+                                    <p><strong>慢性病史：</strong>{{ elderly.elderly_profile.chronic_diseases or '无' }}</p>
+                                    <p><strong>过敏史：</strong>{{ elderly.elderly_profile.allergies or '无' }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>用药情况：</strong>{{ elderly.elderly_profile.medications or '无' }}</p>
+                                    <p><strong>特殊需求：</strong>{{ elderly.elderly_profile.special_needs or '无' }}</p>
+                                </div>
+                            </div>
+                            {% else %}
+                            <p class="text-muted">暂无健康信息</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0"><i class="bi bi-clock-history text-primary me-2"></i>服务记录</h6>
+                        </div>
+                        <div class="card-body">
+                            {% if elderly.service_orders %}
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>服务类型</th>
+                                            <th>服务时间</th>
+                                            <th>状态</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for order in elderly.service_orders[-5:] %}
+                                        <tr>
+                                            <td>{{ order.service_type }}</td>
+                                            <td>{{ order.scheduled_time.strftime('%Y-%m-%d') if order.scheduled_time else '-' }}</td>
+                                            <td>
+                                                {% if order.status == 'completed' %}
+                                                <span class="badge bg-success">已完成</span>
+                                                {% elif order.status == 'in_progress' %}
+                                                <span class="badge bg-primary">进行中</span>
+                                                {% else %}
+                                                <span class="badge bg-secondary">{{ order.status }}</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <p class="text-muted text-center">暂无服务记录</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

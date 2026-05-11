@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}社区管理{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="row g-0 min-vh-100">
+        <div class="col-md-2 sidebar py-4">
+            <div class="text-center mb-4">
+                <img src="{{ url_for('static', filename='images/default_avatar.svg') }}" 
+                     class="avatar-lg rounded-circle mb-2" alt="头像">
+                <h5>{{ current_user.real_name }}</h5>
+                <small class="text-muted">超级管理员</small>
+            </div>
+            <nav class="nav flex-column">
+                <a class="nav-link" href="{{ url_for('super_admin.dashboard') }}">
+                    <i class="bi bi-speedometer2"></i>数据概览
+                </a>
+                <a class="nav-link active" href="{{ url_for('super_admin.communities') }}">
+                    <i class="bi bi-building"></i>社区管理
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.users') }}">
+                    <i class="bi bi-people"></i>用户管理
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.service_categories') }}">
+                    <i class="bi bi-list-ul"></i>服务类别
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.content_management') }}">
+                    <i class="bi bi-megaphone"></i>公告与资讯
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.point_products') }}">
+                    <i class="bi bi-gift"></i>积分商品
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.alert_rules') }}">
+                    <i class="bi bi-bell"></i>预警规则
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.logs') }}">
+                    <i class="bi bi-journal-text"></i>系统日志
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.reports') }}">
+                    <i class="bi bi-file-earmark-bar-graph"></i>数据报表
+                </a>
+            </nav>
+        </div>
+        <div class="col-md-10 py-4 px-5 main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4><i class="bi bi-building text-primary me-2"></i>社区管理</h4>
+                <a href="{{ url_for('super_admin.create_community') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-1"></i>添加社区
+                </a>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    {% if communities %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>社区名称</th>
+                                    <th>地址</th>
+                                    <th>联系电话</th>
+                                    <th>级别</th>
+                                    <th>创建时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for community in communities %}
+                                <tr>
+                                    <td>{{ community.id }}</td>
+                                    <td>{{ community.name }}</td>
+                                    <td>{{ community.address or '-' }}</td>
+                                    <td>{{ community.contact_phone or '-' }}</td>
+                                    <td>
+                                        {% if community.level == 1 %}一级社区
+                                        {% elif community.level == 2 %}二级社区
+                                        {% else %}{{ community.level }}级{% endif %}
+                                    </td>
+                                    <td>{{ community.created_at.strftime('%Y-%m-%d %H:%M') if community.created_at else '-' }}</td>
+                                    <td>
+                                        <a href="{{ url_for('super_admin.edit_community', community_id=community.id) }}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i> 编辑
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-building text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-3">暂无社区数据</p>
+                        <a href="{{ url_for('super_admin.create_community') }}" class="btn btn-primary">
+                            <i class="bi bi-plus-lg me-1"></i>添加第一个社区
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

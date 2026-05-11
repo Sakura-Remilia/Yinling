@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}预警规则管理{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="row g-0 min-vh-100">
+        <div class="col-md-2 sidebar py-4">
+            <div class="text-center mb-4">
+                <img src="{{ url_for('static', filename='images/default_avatar.svg') }}" 
+                     class="avatar-lg rounded-circle mb-2" alt="头像">
+                <h5>{{ current_user.real_name }}</h5>
+                <small class="text-muted">超级管理员</small>
+            </div>
+            <nav class="nav flex-column">
+                <a class="nav-link" href="{{ url_for('super_admin.dashboard') }}">
+                    <i class="bi bi-speedometer2"></i>数据概览
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.communities') }}">
+                    <i class="bi bi-building"></i>社区管理
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.users') }}">
+                    <i class="bi bi-people"></i>用户管理
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.service_categories') }}">
+                    <i class="bi bi-list-ul"></i>服务类别
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.content_management') }}">
+                    <i class="bi bi-megaphone"></i>公告与资讯
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.point_products') }}">
+                    <i class="bi bi-gift"></i>积分商品
+                </a>
+                <a class="nav-link active" href="{{ url_for('super_admin.alert_rules') }}">
+                    <i class="bi bi-bell"></i>预警规则
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.logs') }}">
+                    <i class="bi bi-journal-text"></i>系统日志
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.reports') }}">
+                    <i class="bi bi-file-earmark-bar-graph"></i>数据报表
+                </a>
+            </nav>
+        </div>
+        <div class="col-md-10 py-4 px-5 main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4><i class="bi bi-bell text-primary me-2"></i>预警规则管理</h4>
+                <a href="{{ url_for('super_admin.create_alert_rule') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-1"></i>添加规则
+                </a>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    {% if rules %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>规则名称</th>
+                                    <th>类型</th>
+                                    <th>阈值</th>
+                                    <th>时间窗口</th>
+                                    <th>通知角色</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rule in rules %}
+                                <tr>
+                                    <td>{{ rule.id }}</td>
+                                    <td>{{ rule.name }}</td>
+                                    <td>
+                                        {% if rule.rule_type == 'sos' %}
+                                        <span class="badge bg-danger">SOS预警</span>
+                                        {% elif rule.rule_type == 'order' %}
+                                        <span class="badge bg-warning text-dark">订单预警</span>
+                                        {% elif rule.rule_type == 'health' %}
+                                        <span class="badge bg-info">健康预警</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">{{ rule.rule_type }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ rule.threshold }}</td>
+                                    <td>{{ rule.time_window_hours }} 小时</td>
+                                    <td>{{ rule.notify_roles or '-' }}</td>
+                                    <td>
+                                        {% if rule.is_active %}
+                                        <span class="badge bg-success">启用</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">禁用</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('super_admin.edit_alert_rule', rule_id=rule.id) }}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i> 编辑
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-bell text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-3">暂无预警规则数据</p>
+                        <a href="{{ url_for('super_admin.create_alert_rule') }}" class="btn btn-primary">
+                            <i class="bi bi-plus-lg me-1"></i>添加第一个规则
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

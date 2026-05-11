@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}用户管理{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="row g-0 min-vh-100">
+        <div class="col-md-2 sidebar py-4">
+            <div class="text-center mb-4">
+                <img src="{{ url_for('static', filename='images/default_avatar.svg') }}" 
+                     class="avatar-lg rounded-circle mb-2" alt="头像">
+                <h5>{{ current_user.real_name }}</h5>
+                <small class="text-muted">超级管理员</small>
+            </div>
+            <nav class="nav flex-column">
+                <a class="nav-link" href="{{ url_for('super_admin.dashboard') }}">
+                    <i class="bi bi-speedometer2"></i>数据概览
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.communities') }}">
+                    <i class="bi bi-building"></i>社区管理
+                </a>
+                <a class="nav-link active" href="{{ url_for('super_admin.users') }}">
+                    <i class="bi bi-people"></i>用户管理
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.service_categories') }}">
+                    <i class="bi bi-list-ul"></i>服务类别
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.content_management') }}">
+                    <i class="bi bi-megaphone"></i>公告与资讯
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.point_products') }}">
+                    <i class="bi bi-gift"></i>积分商品
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.alert_rules') }}">
+                    <i class="bi bi-bell"></i>预警规则
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.logs') }}">
+                    <i class="bi bi-journal-text"></i>系统日志
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.reports') }}">
+                    <i class="bi bi-file-earmark-bar-graph"></i>数据报表
+                </a>
+            </nav>
+        </div>
+        <div class="col-md-10 py-4 px-5 main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4><i class="bi bi-people text-primary me-2"></i>用户管理</h4>
+                <a href="{{ url_for('super_admin.create_user') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-1"></i>添加用户
+                </a>
+            </div>
+            
+            <div class="card mb-3">
+                <div class="card-body">
+                    <form method="GET" class="row g-3">
+                        <div class="col-md-4">
+                            <select class="form-select" name="role">
+                                <option value="">全部角色</option>
+                                {% for role in roles %}
+                                <option value="{{ role.id }}" {% if request.args.get('role') == role.id|string %}selected{% endif %}>
+                                    {{ role.description or role.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-select" name="community">
+                                <option value="">全部社区</option>
+                                {% for community in communities %}
+                                <option value="{{ community.id }}" {% if request.args.get('community') == community.id|string %}selected{% endif %}>
+                                    {{ community.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-search me-1"></i>筛选
+                            </button>
+                            <a href="{{ url_for('super_admin.users') }}" class="btn btn-outline-secondary">重置</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    {% if users %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>用户名</th>
+                                    <th>姓名</th>
+                                    <th>手机号</th>
+                                    <th>角色</th>
+                                    <th>所属社区</th>
+                                    <th>状态</th>
+                                    <th>注册时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr>
+                                    <td>{{ user.id }}</td>
+                                    <td>{{ user.username }}</td>
+                                    <td>{{ user.real_name or '-' }}</td>
+                                    <td>{{ user.phone or '-' }}</td>
+                                    <td>
+                                        <span class="badge bg-info">{{ user.role.description if user.role and user.role.description else (user.role.name if user.role else '-') }}</span>
+                                    </td>
+                                    <td>{{ user.community.name if user.community else '-' }}</td>
+                                    <td>
+                                        {% if user.is_active %}
+                                        <span class="badge bg-success">正常</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">禁用</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ user.created_at.strftime('%Y-%m-%d %H:%M') if user.created_at else '-' }}</td>
+                                    <td>
+                                        <a href="{{ url_for('super_admin.edit_user', user_id=user.id) }}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i> 编辑
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-people text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-3">暂无用户数据</p>
+                        <a href="{{ url_for('super_admin.create_user') }}" class="btn btn-primary">
+                            <i class="bi bi-plus-lg me-1"></i>添加第一个用户
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

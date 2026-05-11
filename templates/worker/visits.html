@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}走访记录{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="row g-0 min-vh-100">
+        <div class="col-md-2 sidebar py-4">
+            <div class="text-center mb-4">
+                <img src="{{ url_for('static', filename='images/default_avatar.svg') }}" 
+                     class="avatar-lg rounded-circle mb-2" alt="头像">
+                <h5>{{ current_user.real_name }}</h5>
+                {% if current_user.worker_profile and current_user.worker_profile.is_verified %}
+                <span class="badge bg-success">已认证</span>
+                {% else %}
+                <span class="badge bg-warning">待审核</span>
+                {% endif %}
+            </div>
+            <nav class="nav flex-column">
+                <a class="nav-link" href="{{ url_for('worker.dashboard') }}">
+                    <i class="bi bi-house"></i>首页
+                </a>
+                <a class="nav-link" href="{{ url_for('worker.orders') }}">
+                    <i class="bi bi-list-task"></i>工单中心
+                </a>
+                <a class="nav-link" href="{{ url_for('worker.my_orders') }}">
+                    <i class="bi bi-briefcase"></i>我的工单
+                </a>
+                <a class="nav-link" href="{{ url_for('worker.elderly_list') }}">
+                    <i class="bi bi-people"></i>老人档案
+                </a>
+                <a class="nav-link active" href="{{ url_for('worker.visits') }}">
+                    <i class="bi bi-geo-alt"></i>走访任务
+                </a>
+                <a class="nav-link" href="{{ url_for('worker.follow_ups') }}">
+                    <i class="bi bi-telephone"></i>回访记录
+                </a>
+                <a class="nav-link" href="{{ url_for('worker.profile') }}">
+                    <i class="bi bi-person"></i>个人资料
+                </a>
+            </nav>
+        </div>
+        <div class="col-md-10 py-4 px-5 main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4><i class="bi bi-geo-alt text-primary me-2"></i>走访记录</h4>
+                <a href="{{ url_for('worker.create_visit') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i>新建走访
+                </a>
+            </div>
+            
+            {% if visits %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>走访对象</th>
+                            <th>走访类型</th>
+                            <th>计划时间</th>
+                            <th>实际时间</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for visit in visits %}
+                        <tr>
+                            <td>
+                                <i class="bi bi-person text-primary me-2"></i>
+                                {{ visit.elderly.real_name if visit.elderly else '未知' }}
+                            </td>
+                            <td>{{ visit.visit_type or '常规走访' }}</td>
+                            <td>{{ visit.scheduled_time.strftime('%Y-%m-%d %H:%M') if visit.scheduled_time else '待定' }}</td>
+                            <td>{{ visit.actual_time.strftime('%Y-%m-%d %H:%M') if visit.actual_time else '-' }}</td>
+                            <td>
+                                {% if visit.status == 'completed' %}
+                                <span class="badge bg-success">已完成</span>
+                                {% elif visit.status == 'in_progress' %}
+                                <span class="badge bg-primary">进行中</span>
+                                {% else %}
+                                <span class="badge bg-secondary">待走访</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if visit.status != 'completed' %}
+                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#completeModal{{ visit.id }}">
+                                    <i class="bi bi-check-circle me-1"></i>完成
+                                </button>
+                                {% else %}
+                                <span class="text-muted">已完成</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        
+                        <div class="modal fade" id="completeModal{{ visit.id }}" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">完成走访</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <form action="{{ url_for('worker.complete_visit', visit_id=visit.id) }}" method="POST">
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label class="form-label">健康状况</label>
+                                                <select class="form-select" name="health_status" required>
+                                                    <option value="良好">良好</option>
+                                                    <option value="一般">一般</option>
+                                                    <option value="较差">较差</option>
+                                                    <option value="需关注">需关注</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">需求记录</label>
+                                                <textarea class="form-control" name="needs" rows="2" placeholder="记录老人当前需求"></textarea>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">备注</label>
+                                                <textarea class="form-control" name="notes" rows="2" placeholder="其他备注信息"></textarea>
+                                            </div>
+                                            <input type="hidden" name="longitude" id="longitude{{ visit.id }}">
+                                            <input type="hidden" name="latitude" id="latitude{{ visit.id }}">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                                            <button type="submit" class="btn btn-primary">提交</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="bi bi-geo-alt" style="font-size: 4rem; color: #ccc;"></i>
+                    <h5 class="mt-3 text-muted">暂无走访记录</h5>
+                    <p class="text-muted">点击右上角按钮创建新的走访任务</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

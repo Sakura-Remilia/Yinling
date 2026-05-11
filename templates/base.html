@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}银龄社区{% endblock %} - 适老化服务平台</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #e74c3c;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #c0392b;
+            --light-bg: #f8f9fa;
+            --elderly-font-size: 18px;
+            --elderly-btn-size: 1.2rem;
+            --navbar-height: 56px;
+            --footer-height: 200px;
+        }
+        
+        html, body {
+            height: 100%;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', '微软雅黑', sans-serif;
+            background-color: var(--light-bg);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding-top: var(--navbar-height);
+        }
+        
+        .navbar {
+            height: var(--navbar-height);
+        }
+        
+        .page-content {
+            flex: 1;
+        }
+        
+        .main-content {
+            min-height: calc(100vh - var(--navbar-height) - var(--footer-height));
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            color: var(--primary-color) !important;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        
+        .sos-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #e74c3c, #c0392b);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .sos-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 35px rgba(231, 76, 60, 0.5);
+        }
+        
+        .sos-button:active {
+            transform: scale(0.95);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .sidebar {
+            background: white;
+            min-height: calc(100vh - var(--navbar-height) - var(--footer-height));
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: var(--navbar-height);
+            height: calc(100vh - var(--navbar-height));
+            overflow-y: auto;
+        }
+        
+        .sidebar .nav-link {
+            color: #333;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 4px 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar .nav-link:hover {
+            background-color: var(--light-bg);
+            color: var(--primary-color);
+        }
+        
+        .sidebar .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+        }
+        
+        .stat-card.success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        .stat-card.warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .stat-card.info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .stat-card h3 {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card p {
+            margin: 0;
+            opacity: 0.9;
+        }
+        
+        .elderly-mode .btn {
+            font-size: var(--elderly-btn-size);
+            padding: 15px 30px;
+        }
+        
+        .elderly-mode .card-title {
+            font-size: 1.5rem;
+        }
+        
+        .elderly-mode p, .elderly-mode span {
+            font-size: var(--elderly-font-size);
+        }
+        
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .alert-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(231, 76, 60, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+        }
+        
+        .flash-messages {
+            position: fixed;
+            top: calc(var(--navbar-height) + 10px);
+            right: 20px;
+            z-index: 1050;
+            max-width: 350px;
+        }
+        
+        .flash-messages .alert {
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .status-pending { background-color: #fff3cd; color: #856404; }
+        .status-accepted { background-color: #cce5ff; color: #004085; }
+        .status-in_progress { background-color: #d4edda; color: #155724; }
+        .status-completed { background-color: #d1ecf1; color: #0c5460; }
+        .status-cancelled { background-color: #f8d7da; color: #721c24; }
+        .status-active { background-color: #f8d7da; color: #721c24; }
+        .status-resolved { background-color: #d4edda; color: #155724; }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px 0;
+            flex-shrink: 0;
+            width: 100%;
+        }
+        
+        footer a {
+            color: #bdc3c7;
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            color: white;
+        }
+        
+        .activity-card img {
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .news-card .card-img-top {
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .avatar-lg {
+            width: 80px;
+            height: 80px;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #e9ecef;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -24px;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+        }
+
+        /* ========== 手机端适配样式 ========== */
+        @media (max-width: 768px) {
+            /* 所有侧边栏在手机端隐藏 */
+            .sidebar {
+                display: none !important;
+            }
+
+            /* 主内容区全宽 */
+            .main-content {
+                padding-left: 10px !important;
+                padding-right: 10px !important;
+            }
+
+            /* 卡片单列显示 */
+            .col-md-6, .col-md-4, .col-md-3 {
+                width: 100%;
+                max-width: 100%;
+                flex: 0 0 100%;
+            }
+
+            /* SOS按钮缩小适配 */
+            .sos-button {
+                width: 90px;
+                height: 90px;
+                font-size: 1.5rem;
+            }
+
+            /* 卡片文字适应 */
+            .card-title {
+                font-size: 1rem;
+            }
+
+            /* 底部导航栏 */
+            .mobile-bottom-nav {
+                display: flex !important;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: white;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+                z-index: 1050;
+                padding: 8px 0;
+                justify-content: space-around;
+            }
+
+            .mobile-bottom-nav a {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-decoration: none;
+                color: #6c757d;
+                font-size: 0.7rem;
+                padding: 5px 8px;
+                border-radius: 8px;
+                transition: all 0.2s;
+            }
+
+            .mobile-bottom-nav a i {
+                font-size: 1.3rem;
+                margin-bottom: 3px;
+            }
+
+            .mobile-bottom-nav a.active {
+                color: var(--primary-color);
+                background-color: rgba(231, 76, 60, 0.1);
+            }
+
+            .mobile-bottom-nav a.sos-nav {
+                color: var(--primary-color);
+            }
+
+            .mobile-bottom-nav a.sos-nav i {
+                font-size: 1.8rem;
+            }
+
+            /* body 增加底部导航高度 */
+            body {
+                padding-bottom: 70px !important;
+            }
+
+            /* 底部版权在手机端隐藏 */
+            footer {
+                display: none !important;
+            }
+
+            /* 返回顶部按钮位置调整 */
+            #back-to-top {
+                bottom: 80px !important;
+            }
+
+            /* 表格响应式 */
+            .table-responsive {
+                font-size: 0.85rem;
+            }
+
+            /* 顶部导航简化 */
+            .navbar-brand span {
+                display: none;
+            }
+        }
+
+        /* 默认隐藏手机端底部导航（桌面端不显示） */
+        .mobile-bottom-nav {
+            display: none;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="{{ url_for('main.index') }}">
+                <i class="bi bi-heart-pulse-fill text-danger"></i> 银龄社区
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    {% if current_user.is_authenticated %}
+                        {% if current_user.is_elderly() %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('elderly.dashboard') }}">首页</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('elderly.services') }}">服务</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('elderly.activities') }}">活动</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('elderly.news') }}">资讯</a>
+                        </li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <img src="{{ url_for('static', filename='images/' + current_user.avatar) }}"
+                                 class="avatar me-2" alt="头像"
+                                 onerror="this.src='{{ url_for('static', filename='images/default_avatar.svg') }}'">
+                            {{ current_user.real_name }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{{ url_for('auth.profile') }}">
+                                <i class="bi bi-person me-2"></i>个人设置
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">
+                                <i class="bi bi-box-arrow-right me-2"></i>退出登录
+                            </a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    {% if request.endpoint != 'main.index' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.index') }}">返回首页</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.login') }}">登录</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary ms-2" href="{{ url_for('auth.register') }}">注册</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <div class="page-content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5><i class="bi bi-heart-pulse-fill"></i> 银龄社区</h5>
+                    <p class="mt-3">致力于为老年人提供便捷、贴心的社区服务，让每一位老人都能享受幸福晚年。</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>快速链接</h5>
+                    <ul class="list-unstyled mt-3">
+                        <li><a href="{{ url_for('main.about') }}">关于我们</a></li>
+                        <li><a href="{{ url_for('main.contact') }}">联系我们</a></li>
+                        <li><a href="#">服务条款</a></li>
+                        <li><a href="#">隐私政策</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>联系方式</h5>
+                    <ul class="list-unstyled mt-3">
+                        <li><i class="bi bi-telephone me-2"></i>服务热线：400-123-4567</li>
+                        <li><i class="bi bi-envelope me-2"></i>邮箱：service@yinling.com</li>
+                        <li><i class="bi bi-geo-alt me-2"></i>地址：社区服务中心</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4" style="border-color: #34495e;">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2026 银龄社区 - 适老化服务平台. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        setTimeout(function() {
+            document.querySelectorAll('.flash-messages .alert').forEach(function(alert) {
+                alert.classList.remove('show');
+                setTimeout(() => alert.remove(), 300);
+            });
+        }, 5000);
+    </script>
+    {% block extra_js %}{% endblock %}
+
+    <!-- ========== 手机端底部导航 ========== -->
+    <nav class="mobile-bottom-nav" id="mobileBottomNav">
+        {% if current_user.is_authenticated %}
+            {% if current_user.is_elderly() %}
+        <a href="{{ url_for('elderly.dashboard') }}" data-endpoint="elderly.dashboard">
+            <i class="bi bi-house"></i>
+            <span>首页</span>
+        </a>
+        <a href="{{ url_for('elderly.news') }}" data-endpoint="elderly.news">
+            <i class="bi bi-newspaper"></i>
+            <span>资讯</span>
+        </a>
+        <a href="{{ url_for('elderly.sos') }}" data-endpoint="elderly.sos" class="sos-nav">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>SOS</span>
+        </a>
+        <a href="{{ url_for('elderly.services') }}" data-endpoint="elderly.services">
+            <i class="bi bi-heart"></i>
+            <span>服务</span>
+        </a>
+        <a href="{{ url_for('elderly.profile') }}" data-endpoint="elderly.profile">
+            <i class="bi bi-person"></i>
+            <span>我的</span>
+        </a>
+            {% elif current_user.is_community_admin() %}
+        <a href="{{ url_for('community_admin.dashboard') }}" data-endpoint="community_admin.dashboard">
+            <i class="bi bi-house"></i>
+            <span>首页</span>
+        </a>
+        <a href="{{ url_for('community_admin.elderly_list') }}" data-endpoint="community_admin.elderly_list">
+            <i class="bi bi-people"></i>
+            <span>老人</span>
+        </a>
+        <a href="{{ url_for('community_admin.sos_list') }}" data-endpoint="community_admin.sos_list" class="sos-nav">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>SOS</span>
+        </a>
+        <a href="{{ url_for('community_admin.orders') }}" data-endpoint="community_admin.orders">
+            <i class="bi bi-list-check"></i>
+            <span>订单</span>
+        </a>
+        <a href="{{ url_for('community_admin.profile') }}" data-endpoint="community_admin.profile">
+            <i class="bi bi-person"></i>
+            <span>我的</span>
+        </a>
+            {% elif current_user.is_super_admin() %}
+        <a href="{{ url_for('super_admin.dashboard') }}" data-endpoint="super_admin.dashboard">
+            <i class="bi bi-house"></i>
+            <span>首页</span>
+        </a>
+        <a href="{{ url_for('super_admin.users') }}" data-endpoint="super_admin.users">
+            <i class="bi bi-people"></i>
+            <span>用户</span>
+        </a>
+        <a href="{{ url_for('super_admin.content_management') }}" data-endpoint="super_admin.content_management">
+            <i class="bi bi-newspaper"></i>
+            <span>内容</span>
+        </a>
+        <a href="{{ url_for('super_admin.communities') }}" data-endpoint="super_admin.communities">
+            <i class="bi bi-building"></i>
+            <span>社区</span>
+        </a>
+        <a href="{{ url_for('super_admin.profile') }}" data-endpoint="super_admin.profile">
+            <i class="bi bi-person"></i>
+            <span>我的</span>
+        </a>
+            {% elif current_user.is_worker() %}
+        <a href="{{ url_for('worker.dashboard') }}" data-endpoint="worker.dashboard">
+            <i class="bi bi-house"></i>
+            <span>首页</span>
+        </a>
+        <a href="{{ url_for('worker.orders') }}" data-endpoint="worker.orders">
+            <i class="bi bi-list-check"></i>
+            <span>工单</span>
+        </a>
+        <a href="{{ url_for('worker.elderly_list') }}" data-endpoint="worker.elderly_list">
+            <i class="bi bi-people"></i>
+            <span>老人</span>
+        </a>
+        <a href="{{ url_for('worker.follow_ups') }}" data-endpoint="worker.follow_ups">
+            <i class="bi bi-clipboard-check"></i>
+            <span>随访</span>
+        </a>
+        <a href="{{ url_for('worker.profile') }}" data-endpoint="worker.profile">
+            <i class="bi bi-person"></i>
+            <span>我的</span>
+        </a>
+            {% elif current_user.is_volunteer() %}
+        <a href="{{ url_for('volunteer.dashboard') }}" data-endpoint="volunteer.dashboard">
+            <i class="bi bi-house"></i>
+            <span>首页</span>
+        </a>
+        <a href="{{ url_for('volunteer.tasks') }}" data-endpoint="volunteer.tasks">
+            <i class="bi bi-calendar-check"></i>
+            <span>任务</span>
+        </a>
+        <a href="{{ url_for('volunteer.my_orders') }}" data-endpoint="volunteer.my_orders">
+            <i class="bi bi-list-check"></i>
+            <span>订单</span>
+        </a>
+        <a href="{{ url_for('volunteer.points') }}" data-endpoint="volunteer.points">
+            <i class="bi bi-star"></i>
+            <span>积分</span>
+        </a>
+        <a href="{{ url_for('volunteer.profile') }}" data-endpoint="volunteer.profile">
+            <i class="bi bi-person"></i>
+            <span>我的</span>
+        </a>
+            {% endif %}
+        {% else %}
+        <!-- 未登录，显示基础导航 -->
+        <a href="{{ url_for('main.index') }}" data-endpoint="main.index">
+            <i class="bi bi-house"></i>
+            <span>首页</span>
+        </a>
+        <a href="{{ url_for('auth.login') }}" data-endpoint="auth.login">
+            <i class="bi bi-box-arrow-in-right"></i>
+            <span>登录</span>
+        </a>
+        {% endif %}
+    </nav>
+
+    <script>
+    (function() {
+        // 移动端底部导航高亮当前页
+        var currentEndpoint = '{{ request.endpoint | default("") }}';
+        var navLinks = document.querySelectorAll('.mobile-bottom-nav a');
+        navLinks.forEach(function(link) {
+            var linkEndpoint = link.getAttribute('data-endpoint');
+            if (linkEndpoint === currentEndpoint) {
+                link.classList.add('active');
+            }
+        });
+    })();
+    </script>
+
+    <!-- 返回顶部按钮 -->
+    <button id="back-to-top" class="btn btn-primary position-fixed bottom-0 end-0 me-3 mb-3 rounded-circle shadow"
+            style="width: 50px; height: 50px; display: none; z-index: 1050;" title="返回顶部">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
+    <script>
+    (function() {
+        var btn = document.getElementById('back-to-top');
+
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                btn.style.display = 'block';
+            } else {
+                btn.style.display = 'none';
+            }
+        });
+
+        btn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    })();
+    </script>
+</body>
+</html>

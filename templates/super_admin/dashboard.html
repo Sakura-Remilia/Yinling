@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}后台管理员首页{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="row g-0 min-vh-100">
+        <div class="col-md-2 sidebar py-4">
+            <div class="text-center mb-4">
+                <img src="{{ url_for('static', filename='images/default_avatar.svg') }}" 
+                     class="avatar-lg rounded-circle mb-2" alt="头像">
+                <h5>{{ current_user.real_name }}</h5>
+                <small class="text-muted">超级管理员</small>
+            </div>
+            <nav class="nav flex-column">
+                <a class="nav-link active" href="{{ url_for('super_admin.dashboard') }}">
+                    <i class="bi bi-speedometer2"></i>数据概览
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.communities') }}">
+                    <i class="bi bi-building"></i>社区管理
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.users') }}">
+                    <i class="bi bi-people"></i>用户管理
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.service_categories') }}">
+                    <i class="bi bi-list-ul"></i>服务类别
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.content_management') }}">
+                    <i class="bi bi-megaphone"></i>公告与资讯
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.point_products') }}">
+                    <i class="bi bi-gift"></i>积分商品
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.alert_rules') }}">
+                    <i class="bi bi-bell"></i>预警规则
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.logs') }}">
+                    <i class="bi bi-journal-text"></i>系统日志
+                </a>
+                <a class="nav-link" href="{{ url_for('super_admin.reports') }}">
+                    <i class="bi bi-file-earmark-bar-graph"></i>数据报表
+                </a>
+            </nav>
+        </div>
+        <div class="col-md-10 py-4 px-5 main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4><i class="bi bi-speedometer2 text-primary me-2"></i>系统概览</h4>
+            </div>
+            
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <h3>{{ total_users }}</h3>
+                        <p><i class="bi bi-people me-2"></i>用户总数</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card success">
+                        <h3>{{ total_communities }}</h3>
+                        <p><i class="bi bi-building me-2"></i>社区数量</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card warning">
+                        <h3>{{ total_orders }}</h3>
+                        <p><i class="bi bi-list-check me-2"></i>订单总数</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card info">
+                        <h3>{{ (total_service_hours / 60) | round(1) }}</h3>
+                        <p><i class="bi bi-clock me-2"></i>服务时长(小时)</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0"><i class="bi bi-pie-chart text-primary me-2"></i>用户角色分布</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if users_by_role %}
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>角色</th>
+                                            <th>数量</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for role_name, count in users_by_role %}
+                                        <tr>
+                                            <td>
+                                                {% if role_name == 'elderly' %}老人
+                                                {% elif role_name == 'volunteer' %}志愿者
+                                                {% elif role_name == 'worker' %}工作人员
+                                                {% elif role_name == 'community_admin' %}社区管理员
+                                                {% elif role_name == 'super_admin' %}超级管理员
+                                                {% else %}{{ role_name }}{% endif %}
+                                            </td>
+                                            <td>{{ count }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <p class="text-center text-muted py-4">暂无数据</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0"><i class="bi bi-lightning text-warning me-2"></i>快捷操作</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a href="{{ url_for('super_admin.create_community') }}" class="btn btn-primary">
+                                    <i class="bi bi-building me-2"></i>添加社区
+                                </a>
+                                <a href="{{ url_for('super_admin.create_user') }}" class="btn btn-success">
+                                    <i class="bi bi-person-plus me-2"></i>添加用户
+                                </a>
+                                <a href="{{ url_for('super_admin.create_news') }}" class="btn btn-info">
+                                    <i class="bi bi-newspaper me-2"></i>发布资讯
+                                </a>
+                                <a href="{{ url_for('super_admin.reports') }}" class="btn btn-warning">
+                                    <i class="bi bi-file-earmark-bar-graph me-2"></i>查看报表
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

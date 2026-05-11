@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}联系我们{% endblock %}
+
+{% block content %}
+<div class="hero-section bg-gradient-primary text-white py-5" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 fw-bold">联系我们</h1>
+                <p class="lead">我们随时准备为您服务</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row g-5">
+        <div class="col-lg-6">
+            <h2 class="mb-4"><i class="bi bi-chat-dots-fill text-primary me-2"></i>联系方式</h2>
+            
+            <div class="d-flex align-items-start mb-4 p-3 bg-light rounded">
+                <div class="me-3">
+                    <i class="bi bi-telephone-fill text-danger" style="font-size: 2rem;"></i>
+                </div>
+                <div>
+                    <h5>服务热线</h5>
+                    <p class="mb-0 text-muted">400-123-4567</p>
+                    <small class="text-muted">工作时间：周一至周日 8:00-20:00</small>
+                </div>
+            </div>
+            
+            <div class="d-flex align-items-start mb-4 p-3 bg-light rounded">
+                <div class="me-3">
+                    <i class="bi bi-envelope-fill text-primary" style="font-size: 2rem;"></i>
+                </div>
+                <div>
+                    <h5>电子邮箱</h5>
+                    <p class="mb-0 text-muted">service@yinling.com</p>
+                    <small class="text-muted">我们会在24小时内回复您</small>
+                </div>
+            </div>
+            
+            <div class="d-flex align-items-start mb-4 p-3 bg-light rounded">
+                <div class="me-3">
+                    <i class="bi bi-geo-alt-fill text-success" style="font-size: 2rem;"></i>
+                </div>
+                <div>
+                    <h5>服务地址</h5>
+                    <p class="mb-0 text-muted">社区服务中心</p>
+                    <small class="text-muted">欢迎来访咨询</small>
+                </div>
+            </div>
+            
+            <div class="d-flex align-items-start p-3 bg-light rounded">
+                <div class="me-3">
+                    <i class="bi bi-clock-fill text-warning" style="font-size: 2rem;"></i>
+                </div>
+                <div>
+                    <h5>工作时间</h5>
+                    <p class="mb-0 text-muted">周一至周日 8:00-20:00</p>
+                    <small class="text-muted">节假日正常服务</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <h2 class="mb-4"><i class="bi bi-send-fill text-success me-2"></i>在线留言</h2>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">您的姓名</label>
+                            <input type="text" class="form-control" id="name" placeholder="请输入您的姓名">
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">联系电话</label>
+                            <input type="tel" class="form-control" id="phone" placeholder="请输入您的联系电话">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">电子邮箱</label>
+                            <input type="email" class="form-control" id="email" placeholder="请输入您的电子邮箱">
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">咨询主题</label>
+                            <select class="form-select" id="subject">
+                                <option value="">请选择咨询主题</option>
+                                <option value="service">服务咨询</option>
+                                <option value="complaint">投诉建议</option>
+                                <option value="cooperation">合作洽谈</option>
+                                <option value="other">其他问题</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">留言内容</label>
+                            <textarea class="form-control" id="message" rows="4" placeholder="请输入您的留言内容"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-send me-2"></i>提交留言
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">常见问题</h2>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-question-circle text-primary me-2"></i>如何注册成为用户？</h5>
+                        <p class="card-text text-muted">点击页面右上角的"注册"按钮，填写相关信息即可完成注册。老人用户可由家属代为注册。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-question-circle text-primary me-2"></i>如何申请上门服务？</h5>
+                        <p class="card-text text-muted">登录后在服务页面选择所需服务类型，填写服务地址和时间，提交后等待工作人员确认即可。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-question-circle text-primary me-2"></i>紧急求助如何使用？</h5>
+                        <p class="card-text text-muted">登录后点击首页的"SOS"按钮，系统会自动通知您的紧急联系人和社区工作人员。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-question-circle text-primary me-2"></i>如何成为志愿者？</h5>
+                        <p class="card-text text-muted">在注册时选择"志愿者"角色，填写相关信息并提交申请，审核通过后即可参与志愿服务。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
